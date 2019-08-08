@@ -1,0 +1,17 @@
+FROM ruby:2.5-alpine
+
+RUN apk update && apk add build-base nodejs postgresql-dev
+
+RUN mkdir /app
+WORKDIR /app
+
+RUN gem install bundler
+
+COPY Gemfile Gemfile.lock ./
+RUN bundle install -j20 --retry 5 --binstubs
+
+COPY . .
+
+LABEL maintainer="Tiago <tiago.l.nobre@gmail.com>"
+
+CMD puma -C config/puma.rb
