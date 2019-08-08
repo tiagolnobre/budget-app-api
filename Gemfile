@@ -58,10 +58,16 @@ group :development, :test do
   gem 'rubocop-performance'
   gem 'rubocop-rails'
   gem 'rubocop-rspec', require: false
+<<<<<<< HEAD
   gem 'simplecov', require: false
 
   # audit libs
   # gem 'inquisition', github: 'rubygarage/inquisition'
+=======
+
+  # audit libs
+  gem 'inquisition', github: 'rubygarage/inquisition'
+>>>>>>> affe079... Update main.workflow
 end
 
 group :development do
