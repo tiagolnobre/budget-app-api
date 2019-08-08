@@ -1,3 +1,30 @@
+GIT
+  remote: https://github.com/rubygarage/inquisition.git
+  revision: 0a8fdd71a56ce4360b0554c1623774b82b0159b9
+  specs:
+    inquisition (0.2.0)
+      awesome_print
+      benchmark-ips
+      brakeman
+      bullet
+      bundler-audit
+      colorize
+      fasterer
+      hirb
+      overcommit
+      pry-byebug
+      pry-rails
+      pry-rescue
+      pry-stack_explorer
+      railroady
+      rails-erd
+      rails_best_practices
+      reek
+      rubocop
+      rubycritic
+      simplecov
+      traceroute
+
 GEM
   remote: https://rubygems.org/
   specs:
