@@ -1,3 +1,30 @@
+GIT
+  remote: https://github.com/rubygarage/inquisition.git
+  revision: 0a8fdd71a56ce4360b0554c1623774b82b0159b9
+  specs:
+    inquisition (0.2.0)
+      awesome_print
+      benchmark-ips
+      brakeman
+      bullet
+      bundler-audit
+      colorize
+      fasterer
+      hirb
+      overcommit
+      pry-byebug
+      pry-rails
+      pry-rescue
+      pry-stack_explorer
+      railroady
+      rails-erd
+      rails_best_practices
+      reek
+      rubocop
+      rubycritic
+      simplecov
+      traceroute
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -182,11 +209,6 @@ GEM
       activesupport (= 6.0.3.2)
       method_source
       rake (>= 0.8.7)
-      thor (>= 0.20.3, < 2.0)
-    rainbow (3.0.0)
-    rake (13.0.1)
-    rb-fsevent (0.10.4)
-    rb-inotify (0.10.1)
       ffi (~> 1.0)
     redis (4.2.1)
     regexp_parser (1.7.1)
