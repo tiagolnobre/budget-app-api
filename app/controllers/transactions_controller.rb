@@ -14,7 +14,6 @@ class TransactionsController < ApplicationController
 
   # POST transactions/import
   def import_file
-    binding.pry
     transaction.import_file(params[:file], @current_user)
 
     render :show, status: :created

@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 2019_08_03_222829) do
   enable_extension "uuid-ossp"
 
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.date "date"
     t.text "description"
     t.float "amount"
@@ -40,4 +40,5 @@ ActiveRecord::Schema.define(version: 2019_08_03_222829) do
     t.index ["id"], name: "index_users_on_id"
   end
 
+  add_foreign_key "transactions", "users"
 end

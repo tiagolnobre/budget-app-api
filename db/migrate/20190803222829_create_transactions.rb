@@ -1,7 +1,7 @@
 class CreateTransactions < ActiveRecord::Migration[5.2]
   def change
     create_table :transactions, id: :uuid do |t|
-      t.belongs_to :user, index: true
+      t.references :user, type: :uuid, foreign_key: true, index: true
       t.date :date
       t.text :description
       t.float :amount
@@ -13,6 +13,5 @@ class CreateTransactions < ActiveRecord::Migration[5.2]
 
     add_index :transactions, :date
     add_index :transactions, :category
-
   end
 end
