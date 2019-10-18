@@ -19,8 +19,8 @@ class ApplicationController < ActionController::API
 
   private
 
-  def unauthorized
-    render json: { errors: e.message }, status: :unauthorized
+  def unauthorized(ex)
+    render json: { errors: ex.message }, status: :unauthorized
   end
 
   def set_raven_context
