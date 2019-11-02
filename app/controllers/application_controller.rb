@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::API
+  include ActionController::Serialization
+
   before_action :set_raven_context
 
   rescue_from ActiveRecord::RecordNotFound,

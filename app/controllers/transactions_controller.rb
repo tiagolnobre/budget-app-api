@@ -15,8 +15,8 @@ class TransactionsController < ApplicationController
   # POST transactions/import
   def import_file
     transaction.import_file(params[:file], @current_user)
+    UpdateAccountBalance.perform_later(user: @current_user)
 
-    UpdateCareersJob.perform_later(user: @current_user)
     render :show, status: :created
   rescue
     render json: { errors: transaction.errors.full_messages }, status: :unprocessable_entity

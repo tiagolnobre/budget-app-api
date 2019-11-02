@@ -30,6 +30,10 @@ module BudgetAppApi
 
     config.filter_parameters << :password
 
+    # Set Sidekiq as the back-end for Active Job.
+    config.active_job.queue_adapter = :sidekiq
+    config.active_job.queue_name_prefix = Rails.env
+
     Raven.configure do |config|
       config.dsn = ENV['SENTRY']
     end
