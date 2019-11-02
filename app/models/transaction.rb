@@ -16,10 +16,11 @@ class Transaction < ApplicationRecord
   belongs_to :user
   validates :user_id, presence: true
 
+  has_one :account
+
   scope :for_user, ->(user_id) { where(user_id: user_id) }
-  scope :total_sum, ->(user_id) { for_user(user_id).sum(&:amount) }
-  scope :negative_sum, ->(user_id) { for_user(user_id).select { |t| t.amount.negative? }.sum(&:amount) }
-  scope :positive_sum, ->(user_id) { for_user(user_id).select { |t| !t.amount.negative? }.sum(&:amount) }
+  scope :negative_sum, -> { where("amount < ?", 0).sum(&:amount) }
+  scope :positive_sum, -> { where("amount >= ?", 0).sum(&:amount) }
 
   def import_file(file, user)
     transactions = []
