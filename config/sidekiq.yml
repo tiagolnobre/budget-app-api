@@ -1,0 +1,16 @@
+# This file is only used in the local environment
+:timeout: 30
+:verbose: true
+
+:queues:
+  - [<%= ENV["RAILS_ENV"] %>_low_priority, 1]
+  - [<%= ENV["RAILS_ENV"] %>_normal_priority, 2]
+  - [<%= ENV["RAILS_ENV"] %>_high_priority, 4]
+
+:concurrency: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+:staging:
+  :verbose: false
+
+:production:
+  :verbose: false

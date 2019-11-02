@@ -21,10 +21,11 @@ gem 'jwt'
 
 gem 'activerecord-import'
 
-# gem 'rack-cors', :require => 'rack/cors'
+gem 'rack-cors', :require => 'rack/cors'
 
 gem 'sentry-raven'
 
+gem 'sidekiq', '~> 6.0.3'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
