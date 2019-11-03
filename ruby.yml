@@ -17,6 +17,8 @@ jobs:
       run: |
         gem install bundler
         bundle install --jobs 4 --retry 3
+    - name: Pronto Ruby
+      uses: AdWerx/pronto-ruby@v1.1.0
 
     - name: Rubocop checks
       uses: gimenete/rubocop-action@1.0
