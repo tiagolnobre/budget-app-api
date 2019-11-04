@@ -4,4 +4,5 @@ class Account < ApplicationRecord
   validates :user_id, presence: true
 
   has_many :transactions, dependent: :destroy
+  has_many :monthly_stats, dependent: :destroy
 end
