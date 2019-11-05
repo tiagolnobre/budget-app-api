@@ -28,12 +28,22 @@ module BudgetAppApi
       g.orm :active_record, primary_key_type: :uuid
     end
 
+    config.filter_parameters << :password
+
+    # Set Sidekiq as the back-end for Active Job.
+    config.active_job.queue_adapter = :sidekiq
+    config.active_job.queue_name_prefix = Rails.env
+
+    Raven.configure do |config|
+      config.dsn = ENV['SENTRY']
+    end
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
-    config.autoload_paths << Rails.root.join('lib')
+    config.eager_load_paths << Rails.root.join('lib')
 
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.

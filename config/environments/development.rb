@@ -41,12 +41,19 @@ Rails.application.configure do
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
 
+  config.logger = Logger.new(STDOUT)
+  config.log_level = :debug
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # Use default logging formatter so that PID and timestamp are not suppressed.
+  config.log_formatter = ::Logger::Formatter.new
+
+
 
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.

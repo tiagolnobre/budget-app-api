@@ -14,9 +14,13 @@ class TransactionsController < ApplicationController
 
   # POST transactions/import
   def import_file
-    binding.pry
-    transaction.import_file(params[:file], @current_user)
+    transactions = transaction.import_file(params[:file], @current_user)
 
+    UpdateAccountBalance.perform_later(user: @current_user)
+    UpdateMonthlyBalances.perform_later(
+      user: @current_user,
+      formatted_dates: transactions.map(&:date).map {|c| {month: c.month, year: c.year} }.uniq
+    )
     render :show, status: :created
   rescue
     render json: { errors: transaction.errors.full_messages }, status: :unprocessable_entity
