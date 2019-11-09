@@ -1,4 +1,6 @@
 class Transaction < ApplicationRecord
+  class Transaction::ImportError < ArgumentError; end
+
   TRANSACTION_VALID_HEADERS = %w[date description amount category].freeze
   TRANSACTION_CATEGORIES = %w[
     transport
@@ -31,7 +33,9 @@ class Transaction < ApplicationRecord
     transactions = []
     CSV.foreach(file.path, headers: true, header_converters: header_converter) do |row|
       row["description"] = row["description"].squish
+      row["date"] = parse_date!(row["date"])
       row["category"] ||= match_categories(row["description"])
+
       transactions << Transaction.new(row.to_h.merge(user_id: user.id))
     end
 
@@ -41,6 +45,15 @@ class Transaction < ApplicationRecord
 
   def header_converter
     ->(header){ header.downcase }
+  end
+
+  private
+
+  def parse_date!(date)
+   Date.strptime(date, "%d/%m/%y")
+  rescue ArgumentError
+    errors.add("date", "is invalid formatt, sould be %d/%m/%y.")
+    raise Transaction::ImportError, "date", "is invalid formatt, sould be %d/%m/%y."
   end
 
   def match_categories(description)
