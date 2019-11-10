@@ -33,7 +33,7 @@ class Transaction < ApplicationRecord
     transactions = []
     CSV.foreach(file.path, headers: true, header_converters: header_converter) do |row|
       row["description"] = row["description"].squish
-      row["date"] = parse_date!(row["date"])
+      # row["date"] = Date.parse(row["date"])
       row["category"] ||= match_categories(row["description"])
 
       transactions << Transaction.new(row.to_h.merge(user_id: user.id))
@@ -49,12 +49,12 @@ class Transaction < ApplicationRecord
 
   private
 
-  def parse_date!(date)
-   Date.strptime(date, "%d/%m/%y")
-  rescue ArgumentError
-    errors.add("date", "is invalid formatt, sould be %d/%m/%y.")
-    raise Transaction::ImportError, "date", "is invalid formatt, sould be %d/%m/%y."
-  end
+  # def parse_date!(date)
+  #  Date.strptime(date, "%d/%m/%y")
+  # rescue ArgumentError
+  #   errors.add("date", "is invalid format, sould be %d/%m/%y.")
+  #   raise Transaction::ImportError, "date", "is invalid format, sould be %d/%m/%y."
+  # end
 
   def match_categories(description)
     case description

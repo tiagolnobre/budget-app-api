@@ -21,6 +21,7 @@ class TransactionsController < ApplicationController
       user: @current_user,
       formatted_dates: transactions.map(&:date).map {|c| {month: c.month, year: c.year} }.uniq
     )
+
     render :show, status: :created
   rescue
     render json: { errors: transaction.errors.full_messages }, status: :unprocessable_entity
