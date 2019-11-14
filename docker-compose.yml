@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   postgres:
@@ -14,6 +14,7 @@ services:
       - "6379:6379"
 
   api:
+    container_name: api
     depends_on:
       - 'postgres'
       - 'redis'
@@ -28,6 +29,7 @@ services:
       - '.env'
 
   sidekiq:
+    container_name: sidekiq
     depends_on:
       - 'postgres'
       - 'redis'
@@ -39,6 +41,7 @@ services:
       - '.env'
 
   sidekiq-web:
+    container_name: sidekiq-web
     command: bundle exec rackup -o 0.0.0.0 -p 3000 sidekiq-web.ru
     build: .
     ports:
