@@ -25,7 +25,7 @@ gem 'active_model_serializers'
 
 gem 'rack-cors', :require => 'rack/cors'
 
-gem 'sentry-raven'
+gem 'sentry-raven', require: 'sentry-raven-without-integrations'
 
 gem 'sidekiq', '~> 6.0.3'
 gem 'sidekiq-status'
