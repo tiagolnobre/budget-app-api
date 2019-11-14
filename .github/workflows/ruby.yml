@@ -29,7 +29,7 @@ jobs:
         ruby-version: 2.6.x
     
     - name: install PostgreSQL client
-      run: sudo apt-get install libpq-dev
+      run: sudo apt-get install libpq-dev gsub
    
     - name: Build and test with Rake
       run: |
