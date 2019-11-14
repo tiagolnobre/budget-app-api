@@ -1,50 +1,11 @@
-name: Ruby
-
-on: [push]
-
+name: docker-compose-actions-workflow
+on: push
 jobs:
-  build:
-  
+  test:
     runs-on: ubuntu-latest
-    
-    services:
-      postgres:
-        image: postgres:9.6
-        env:
-          POSTGRES_USER: budget_app_api
-          POSTGRES_PASSWORD: 123qweasd
-          POSTGRES_DB: budget_app_test
-        ports:
-          - 5432:5432
-        # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
-    - uses: actions/checkout@v1
-    
-    - name: Set up Ruby 2.6
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 2.6.x
-    
-    - name: install PostgreSQL client
-      run: sudo apt-get install libpq-dev
-      
-    - name: Build and create DB
-      env:
-        # use localhost for the host here because we have specified a container for the job.
-        # If we were running the job on the VM this would be postgres
-        PGHOST: localhost
-        PGUSER: postgres
-        PGPORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
-        RAILS_ENV: test
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        bin/rails db:setup
-
-    - name: Build and test with Rake
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        bundle exec rake
+      - uses: actions/checkout@v1
+      - name: Build the stack
+        run: docker-compose up -d
+      - name: Test
+        run: docker run --network container:api appropriate/curl -s --retry 10 --retry-connrefused http://localhost:8080/
