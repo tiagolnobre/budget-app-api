@@ -10,15 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_03_222829) do
+ActiveRecord::Schema.define(version: 2019_11_03_222829) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
 
+  create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.text "description"
+    t.float "negative_balance"
+    t.float "positive_balance"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_accounts_on_user_id"
+  end
+
+  create_table "monthly_stats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id"
+    t.integer "month"
+    t.integer "year"
+    t.float "negative_balance", default: 0.0
+    t.float "positive_balance", default: 0.0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_monthly_stats_on_account_id"
+  end
+
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.bigint "user_id"
+    t.uuid "user_id"
     t.date "date"
     t.text "description"
     t.float "amount"
@@ -40,4 +61,7 @@ ActiveRecord::Schema.define(version: 2019_08_03_222829) do
     t.index ["id"], name: "index_users_on_id"
   end
 
+  add_foreign_key "accounts", "users"
+  add_foreign_key "monthly_stats", "accounts"
+  add_foreign_key "transactions", "users"
 end

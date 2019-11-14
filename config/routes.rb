@@ -9,7 +9,11 @@ Rails.application.routes.draw do
   get "transactions" => "transactions#show"
   post "transactions/import" => "transactions#import_file"
 
+  get "account/status" => "accounts#show"
+
   post '/auth/login', to: 'authentication#login'
+
+  match '*path', via: [:options], to:  lambda {|_| [204, {'Content-Type' => 'text/plain'}, []]}
 
   get '/*a', to: 'application#not_found'
 end
