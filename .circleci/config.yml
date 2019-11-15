@@ -1,71 +1,56 @@
-# Ruby CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-ruby/ for more details
-#
 version: 2
 
 defaults: &defaults
-  working_directory: ~/project
-  docker:
-    - image: circleci/ruby:2.5.7
-      environment:
-        BUNDLE_JOBS: 4
-        BUNDLE_RETRY: 3
-        BUNDLE_PATH: vendor/bundle
-        RAILS_ENV: test
-        ES_JAVA_OPTS: -Xms2g -Xmx2g
-        _JAVA_OPTIONS: -Xms1024m -Xmx2048m
-    - image: circleci/postgres:9.6.8-alpine-ram
-      environment:
-        POSTGRES_USER: postgres
-        POSTGRES_DB: project
-        POSTGRES_PASSWORD: ""
+  machine: true # Use a Linux VM instead of docker environment
+  working_directory: ~/repo
+      # environment:
+        # BASH_ENV: /project/.env
 
 jobs:
-  build_rails_dependencies:
+  build_dependencies:
     <<: *defaults
     steps:
       - checkout
       - attach_workspace:
-          at: ~/project
-      - run:
-          name: Install bundler
-          command: gem install bundler
-      - run:
-          name: Which bundler?
-          command: bundle -v
+          at: ~/repo
+      - run: docker-compose up -d
       - restore_cache:
           keys:
             - bundle-{{ checksum "Gemfile.lock" }}
             - bundle-
-      - run:
-          name: Bundle install
-          command: bundle check || bundle install
       - save_cache:
           key: bundle-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
       - persist_to_workspace:
-          root: ~/project
+          root: ~/repo
           paths:
             - vendor/bundle
 
-  run_audits:
+  audits:
     <<: *defaults
     steps:
       - checkout
       - attach_workspace:
-          at: ~/project
-      - run: bundle exec bundle-audit check --update
-      - run: bundle exec brakeman --color -o brakeman_results.html -f plain
+          at: ~/repo
+      - run:
+          name: Install bundler
+          command: gem install bundler
+      - run:
+          name: bundle-audit
+          command: docker-compose run --rm api bundle exec bundle-audit check --update
 
-  run_unit_tests:
+      - run:
+          name: brakeman
+          command: docker-compose run --rm api bundle exec brakeman --color -o brakeman_results.html -f plain
+
+  unit_tests:
     <<: *defaults
-    parallelism: 2
+    parallelism: 1
     steps:
       - checkout
       - attach_workspace:
-          at: ~/project
+          at: ~/repo
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -74,17 +59,11 @@ jobs:
           command: bin/rails db:create db:schema:load --trace
 
       - run:
-          name: Run unit tests              # NOTICE THE EXCLUDED features DIRECTORY BELOW
+          name: Run unit tests
           command: |
-            TEST_DIRS="controllers,jobs,lib,mailers,models,policies,queries,resources,tasks,
-                       uploaders,validations,validators,workers"
-            TEST_COMMAND="$(circleci tests glob "spec/{$TEST_DIRS}/**/*_spec.rb" |
-                            circleci tests split --split-by=timings)"
-            bundle exec rspec --exclude-pattern "spec/features/**/*_spec.rb" \
-                              --format RspecJunitFormatter \
-                              --out test_results/rspec.xml \
-                              --format progress \
-                              $TEST_COMMAND
+            docker-compose run --rm api bundle exec rspec --format RspecJunitFormatter \
+                          --out test_results/rspec.xml \
+                          --format progress
       - store_test_results:
           path: test_results
 
@@ -93,10 +72,10 @@ workflows:
   version: 2
   build_test:
     jobs:
-      - build_rails_dependencies
-      - run_audits:
+      - build_dependencies
+      - audits:
           requires:
-            - build_rails_dependencies
-      - run_unit_tests:
+            - build_dependencies
+      - unit_tests:
           requires:
-            - build_rails_dependencies
+            - build_dependencies
