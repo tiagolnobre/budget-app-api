@@ -1,5 +1,5 @@
 language: ruby
-install: true
+# install: true
 sudo: required
 
 services:
