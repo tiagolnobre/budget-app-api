@@ -33,7 +33,7 @@ before_install:
   - gem install bundler -v 1.17.3
 
 install:
-  - docker-compose up -d --build postgres redis
+  - docker-compose build
   - bundle update --retry=5 --jobs=20
 
 script:
