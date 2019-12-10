@@ -40,4 +40,4 @@ script:
   - bundle exec rspec
 
 after_script:
-  - docker-compose down
+  - docker-compose down api
