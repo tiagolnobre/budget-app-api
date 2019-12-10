@@ -33,11 +33,11 @@ before_install:
   - gem install bundler -v 1.17.3
 
 install:
-  - docker-compose build
+ # - docker-compose build
   - bundle update --retry=5 --jobs=20
 
 script:
   - bundle exec rspec
 
 after_script:
-  - docker-compose down api
+ # - docker-compose down api
