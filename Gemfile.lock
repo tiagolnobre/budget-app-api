@@ -200,7 +200,7 @@ GEM
       rspec-mocks (~> 3.9.0)
       rspec-support (~> 3.9.0)
     rspec-support (3.9.0)
-    sentry-raven (2.12.3)
+    sentry-raven (2.13.0)
       faraday (>= 0.7.6, < 1.0)
     sidekiq (6.0.3)
       connection_pool (>= 2.2.2)
