@@ -11,9 +11,6 @@ addons:
 rvm:
   - 2.6.3
 
-services:
-  - docker
-
 cache:
   yarn: true
   directories:
