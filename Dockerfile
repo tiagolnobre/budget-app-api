@@ -1,11 +1,12 @@
 FROM ruby:2.5-alpine
 
-RUN apk update && apk add build-base nodejs postgresql-dev
+RUN apk update && apk add 
+RUN apk --no-cache add build-base nodejs postgresql-dev
 
 RUN mkdir /app
 WORKDIR /app
 
-RUN gem install bundler
+RUN gem install bundler:2.0.2
 
 COPY Gemfile Gemfile.lock ./
 RUN bundle install -j20 --retry 5 --binstubs
