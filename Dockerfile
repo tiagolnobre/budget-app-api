@@ -1,6 +1,5 @@
 FROM ruby:2.5-alpine
 
-RUN apk update && apk add 
 RUN apk --no-cache add build-base nodejs postgresql-dev
 
 RUN mkdir /app
