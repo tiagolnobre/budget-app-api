@@ -25,7 +25,6 @@ gem 'active_model_serializers'
 
 gem 'rack-cors', :require => 'rack/cors'
 
-gem 'sentry-raven', require: 'sentry-raven-without-integrations'
 gem 'rollbar'
 
 gem 'sidekiq', '~> 6.0.3'
@@ -59,6 +58,8 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
+
+gem 'dotenv-rails', groups: [:development, :test]
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data'

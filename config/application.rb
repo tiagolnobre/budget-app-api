@@ -34,10 +34,6 @@ module BudgetAppApi
     config.active_job.queue_adapter = :sidekiq
     config.active_job.queue_name_prefix = Rails.env
 
-    Raven.configure do |config|
-      config.dsn = ENV['SENTRY']
-    end
-
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
