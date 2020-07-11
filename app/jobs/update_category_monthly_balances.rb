@@ -3,7 +3,7 @@ class UpdateCategoryMonthlyBalances < ApplicationJob
     transactions = account.user.transactions.month(month).year(year)
 
     transactions.pluck(:category).uniq.each do |category|
-      category_transactions = transactions.category(category)
+      category_transactions = transactions.where(category: category)
 
       category_monthly_stat =
         CategoryMonthlyStat.find_or_initialize_by(account: account,
