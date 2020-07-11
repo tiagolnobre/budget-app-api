@@ -5,6 +5,11 @@ class UpdateMonthlyBalances < ApplicationJob
       UpdateMonthBalance.perform_later(
         account: user.accounts.first,
         month: formatted_date[:month],
+        year: formatted_date[:year]
+      )
+      UpdateCategoryMonthlyBalances.perform_later(
+        account: user.accounts.first,
+        month: formatted_date[:month],
         year: formatted_date[:year])
     end
   end

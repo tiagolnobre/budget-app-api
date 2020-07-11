@@ -21,6 +21,8 @@ class Transaction < ApplicationRecord
   validates :description, presence: true
   validates :date, presence: true
 
+  strip_attributes only: [:category], allow_empty: true
+
   has_one :account
 
   scope :for_user, ->(user_id) { where(user_id: user_id) }
@@ -44,7 +46,7 @@ class Transaction < ApplicationRecord
   end
 
   def header_converter
-    ->(header){ header.downcase }
+    ->(header) { header.downcase }
   end
 
   private

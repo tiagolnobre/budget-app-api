@@ -218,6 +218,8 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    strip_attributes (1.11.0)
+      activemodel (>= 3.0, < 7.0)
     thor (1.0.1)
     thread_safe (0.3.6)
     tzinfo (1.2.7)
@@ -262,6 +264,7 @@ DEPENDENCIES
   sidekiq-status
   spring
   spring-watcher-listen (~> 2.0.0)
+  strip_attributes
   tzinfo-data
 
 BUNDLED WITH
