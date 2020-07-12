@@ -47,6 +47,13 @@ jobs:
       # - run: cp .sample.env .env
 
   audits:
+    docker:
+      - image: circleci/ruby:2.6.3-stretch-node
+        environment:
+          BUNDLER_VERSION: 2.1.4
+          PGHOST: localhost
+          PGUSER: budget-app-api
+          RAILS_ENV: test
     steps:
       - checkout
       - attach_workspace:
@@ -61,6 +68,13 @@ jobs:
           command: bundle exec brakeman --color -o brakeman_results.html -f plain
 
   tests:
+    docker:
+      - image: circleci/ruby:2.6.3-stretch-node
+        environment:
+          BUNDLER_VERSION: 2.1.4
+          PGHOST: localhost
+          PGUSER: budget-app-api
+          RAILS_ENV: test
     parallelism: 3
     steps:
       - checkout
