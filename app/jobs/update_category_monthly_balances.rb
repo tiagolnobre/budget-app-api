@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateCategoryMonthlyBalances < ApplicationJob
   def perform(account:, month:, year:)
     transactions = account.user.transactions.month(month).year(year)

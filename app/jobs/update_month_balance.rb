@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateMonthBalance < ApplicationJob
   def perform(account:, month:, year:)
     monthly_stat = MonthlyStat.find_or_initialize_by(account: account, month: month, year: year)
