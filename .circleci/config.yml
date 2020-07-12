@@ -22,10 +22,10 @@ jobs:
           key: bundle-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - vendor/bundle
+      #  - persist_to_workspace:
+      #      root: ~/repo
+      #      paths:
+      #        - vendor/bundle
 
   audits:
     <<: *defaults
