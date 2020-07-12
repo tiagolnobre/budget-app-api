@@ -1,11 +1,5 @@
 version: 2
 
-defaults: &defaults
-  machine: true # Use a Linux VM instead of docker environment
-  working_directory: ~/budget-app-api
-      # environment:
-        # BASH_ENV: /project/.env
-
 jobs:
   build_dependencies:
     working_directory: ~/budget-app-api
@@ -95,6 +89,6 @@ workflows:
       - audits:
           requires:
             - build_dependencies
-      - unit_tests:
+      - tests:
           requires:
             - build_dependencies
