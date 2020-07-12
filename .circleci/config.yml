@@ -38,7 +38,6 @@ jobs:
       # Run rspec in parallel
       - ruby/rspec-test  
 
-version: 2.1
 workflows:
   build_and_test:
     jobs:
