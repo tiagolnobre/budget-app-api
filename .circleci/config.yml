@@ -94,7 +94,7 @@ jobs:
           PGHOST: localhost
           PGUSER: budget-app-api
           RAILS_ENV: test
-           - image: postgres:9.5
+      - image: postgres:9.5
         environment:
           POSTGRES_USER: budget_app_api
           POSTGRES_PASSWORD: 123qweasd
