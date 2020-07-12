@@ -1,0 +1,54 @@
+require:
+  - rubocop-rspec
+  - rubocop-rails
+
+AllCops:
+  DisplayCopNames: true
+  Exclude:
+    - bin/**/*
+    - db/schema.rb
+    - db/seeds.rb
+  TargetRubyVersion: 2.5
+  TargetRailsVersion: 6.0
+
+Style/Documentation:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 120
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Lint/RaiseException:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/LetSetup:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false

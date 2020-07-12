@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateAccountBalance < ApplicationJob
   def perform(user:)
     account = Account.find_or_initialize_by(user: user)

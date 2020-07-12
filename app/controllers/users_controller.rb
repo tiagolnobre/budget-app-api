@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   before_action :authorize_request, except: :create
   before_action :find_user, except: %i[show delete create index]
@@ -8,7 +10,7 @@ class UsersController < ApplicationController
   #   render json: @users, status: :ok
   # end
 
-  # GET /user
+  # GET /user/me
   def show
     render json: @current_user, status: :ok
   end
@@ -47,7 +49,7 @@ class UsersController < ApplicationController
 
   def user_params
     params.permit(
-      :avatar, :name, :username, :email, :password#, :password_confirmation
+      :avatar, :name, :username, :email, :password # , :password_confirmation
     )
   end
 end
