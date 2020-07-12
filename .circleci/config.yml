@@ -19,7 +19,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/repo
+          at: ~/budget-app-api
 
       - run:
           name: Install latest Bundler
@@ -50,7 +50,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/repo
+          at: ~/budget-app-api
 
       - run:
           name: bundle-audit
@@ -65,7 +65,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/repo
+          at: ~/budget-app-api
       # Setup the database
       - run: bundle exec rake db:setup
 
