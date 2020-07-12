@@ -6,6 +6,7 @@ jobs:
     docker:
       - image: circleci/ruby:2.6.3-stretch-node
         environment:
+          BUNDLER_VERSION: 2.1.4
           PGHOST: localhost
           PGUSER: budget-app-api
           RAILS_ENV: test
