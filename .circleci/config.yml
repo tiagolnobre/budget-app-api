@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  build_dependencies:
+  build:
     working_directory: ~/budget-app-api
     docker:
       - image: circleci/ruby:2.6.3-stretch-node
@@ -85,10 +85,10 @@ workflows:
   version: 2
   build_test:
     jobs:
-      - build_dependencies
+      - build
       - audits:
           requires:
-            - build_dependencies
+            - build
       - tests:
           requires:
-            - build_dependencies
+            - build
