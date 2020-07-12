@@ -60,6 +60,10 @@ jobs:
           at: ~/budget-app-api
 
       - run:
+          name: Install latest Bundler
+          command: gem install bundler
+
+      - run:
           name: bundle-audit
           command: bundle exec bundle-audit check --update
 
@@ -80,6 +84,10 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/budget-app-api
+      - run:
+          name: Install latest Bundler
+          command: gem install bundler
+
       # Setup the database
       - run: bundle exec rake db:setup
 
