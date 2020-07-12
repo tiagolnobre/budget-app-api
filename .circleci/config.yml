@@ -136,9 +136,10 @@ jobs:
       - run:
           name: Run unit tests
           command: |
-            rspec --format RspecJunitFormatter \
-                          --out test_results/rspec.xml \
-                          --format progress
+            bundle exec rspec 
+      # --format RspecJunitFormatter \
+      #                    --out test_results/rspec.xml \
+      #                    --format progress
       - store_test_results:
           path: test_results
 
