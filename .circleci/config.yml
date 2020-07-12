@@ -37,9 +37,9 @@ jobs:
           command: bundle exec rails db:schema:load --trace
       # Run rspec in parallel
       - ruby/rspec-test  
-    
-workflows:
+
 version: 2.1
+workflows:
   build_and_test:
     jobs:
       - build
