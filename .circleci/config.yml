@@ -39,10 +39,10 @@ jobs:
       - ruby/rspec-test  
     
 workflows:
-  version: 2
+version: 2.1
   build_and_test:
     jobs:
       - build
       - test:
-          requires:
-            - build
+        requires:
+          - build
