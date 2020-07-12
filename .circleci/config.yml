@@ -51,9 +51,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      #- run:
+      #    name: Wait for DB
+      #    command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: Create DB
           command: bin/rails db:create db:schema:load --trace
