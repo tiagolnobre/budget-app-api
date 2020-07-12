@@ -1,72 +1,85 @@
 version: 2
 
-defaults: &defaults
-  machine: true # Use a Linux VM instead of docker environment
-  working_directory: ~/repo
-      # environment:
-        # BASH_ENV: /project/.env
-
 jobs:
   build_dependencies:
-    <<: *defaults
+    working_directory: ~/budget-app-api
+    docker:
+      - image: circleci/ruby:2.6.3-stretch-node
+        environment:
+          BUNDLER_VERSION: 2.1.4
+          PGHOST: localhost
+          PGUSER: budget-app-api
+          RAILS_ENV: test
+      - image: postgres:9.5
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123qweasd
+          POSTGRES_DB: budget_app_api
+
     steps:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run: docker-compose up -d
-      - restore_cache:
-          keys:
-            - bundle-{{ checksum "Gemfile.lock" }}
-            - bundle-
-      - save_cache:
-          key: bundle-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
-      #  - persist_to_workspace:
-      #      root: ~/repo
-      #      paths:
-      #        - vendor/bundle
+
+      - run:
+          name: Install latest Bundler
+          command: gem install bundler
+
+      # Restore Cached Dependencies
+      - type: cache-restore
+        name: Restore bundle cache
+        key: budget_app_api-{{ checksum "Gemfile.lock" }}
+
+      # Bundle install dependencies
+      - run: bundle install --path vendor/bundle
+
+      # Cache Dependencies
+      - type: cache-save
+        name: Store bundle cache
+        key: budget_app_api-{{ checksum "Gemfile.lock" }}
+        paths:
+          - vendor/bundle
+
+      # Wait for DB
+      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
+    
+      # Setup the environment
+      # - run: cp .sample.env .env
 
   audits:
-    <<: *defaults
     steps:
       - checkout
       - attach_workspace:
           at: ~/repo
-      - run:
-          name: Install bundler
-          command: gem install bundler
+
       - run:
           name: bundle-audit
-          command: docker-compose run --rm api bundle exec bundle-audit check --update
+          command: bundle exec bundle-audit check --update
 
       - run:
           name: brakeman
-          command: docker-compose run --rm api bundle exec brakeman --color -o brakeman_results.html -f plain
+          command: bundle exec brakeman --color -o brakeman_results.html -f plain
 
-  unit_tests:
-    <<: *defaults
-    parallelism: 1
+  tests:
+    parallelism: 3
     steps:
       - checkout
       - attach_workspace:
           at: ~/repo
-      #- run:
-      #    name: Wait for DB
-      #    command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run:
-          name: Create DB
-          command: bin/rails db:create db:schema:load --trace
+      # Setup the database
+      - run: bundle exec rake db:setup
 
+      # Run the tests
+      # - run: bundle exec rspec
+      
       - run:
           name: Run unit tests
           command: |
-            docker-compose run --rm api bundle exec rspec --format RspecJunitFormatter \
+            rspec --format RspecJunitFormatter \
                           --out test_results/rspec.xml \
                           --format progress
       - store_test_results:
           path: test_results
-
 
 workflows:
   version: 2
