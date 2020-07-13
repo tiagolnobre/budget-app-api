@@ -86,6 +86,42 @@ jobs:
           name: brakeman
           command: bundle exec brakeman --color -o brakeman_results.html -f plain
 
+      - run:
+          name: active_record_doctor:unindexed_foreign_keys
+          command: bundle exec rake active_record_doctor:unindexed_foreign_keys
+
+      - run:
+          name: active_record_doctor:extraneous_indexes
+          command: bundle exec rake active_record_doctor:extraneous_indexes
+
+      - run:
+          name: active_record_doctor:missing_foreign_keys
+          command: bundle exec rake active_record_doctor:missing_foreign_keys
+
+      - run:
+          name: active_record_doctor:unindexed_deleted_at
+          command: bundle exec rake active_record_doctor:unindexed_deleted_at
+
+      - run:
+          name: active_record_doctor:undefined_table_references
+          command: bundle exec rake active_record_doctor:undefined_table_references
+
+      - run:
+          name: active_record_doctor:missing_unique_indexes
+          command: bundle exec rake active_record_doctor:missing_unique_indexes
+
+      - run:
+          name: active_record_doctor:missing_non_null_constraint
+          command: bundle exec rake active_record_doctor:missing_non_null_constraint
+
+      - run:
+          name: active_record_doctor:missing_presence_validation
+          command: bundle exec rake active_record_doctor:missing_presence_validation
+
+      - run:
+          name: find missing indexes
+          command: bundle exec lol_dba db:find_indexes
+
   tests:
     docker:
       - image: circleci/ruby:2.6.3-stretch-node
