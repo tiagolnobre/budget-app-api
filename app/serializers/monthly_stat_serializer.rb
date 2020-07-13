@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MonthlyStatSerializer < ActiveModel::Serializer
   attributes :id, :balance, :negative_balance, :positive_balance, :month, :year
 

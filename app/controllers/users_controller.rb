@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   before_action :authorize_request, except: :create
-  before_action :find_user, except: %i[show delete create index]
+  before_action :find_user, except: %i[show destroy create]
 
   # GET /users
   # def index
@@ -8,7 +10,7 @@ class UsersController < ApplicationController
   #   render json: @users, status: :ok
   # end
 
-  # GET /user
+  # GET /user/me
   def show
     render json: @current_user, status: :ok
   end
@@ -26,7 +28,9 @@ class UsersController < ApplicationController
 
   # PUT /users
   def update
-    unless @current_user.update(user_params)
+    if @current_user.update(user_params)
+      render json: @user, status: :ok
+    else
       render json: { errors: @current_user.errors.full_messages },
              status: :unprocessable_entity
     end
@@ -47,7 +51,7 @@ class UsersController < ApplicationController
 
   def user_params
     params.permit(
-      :avatar, :name, :username, :email, :password#, :password_confirmation
+      :avatar, :name, :username, :email, :password # , :password_confirmation
     )
   end
 end
