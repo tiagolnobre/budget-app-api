@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateCategoryMonthlyStats < ActiveRecord::Migration[6.0]
   def change
     create_table :category_monthly_stats, id: :uuid do |t|

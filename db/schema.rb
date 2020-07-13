@@ -38,7 +38,6 @@ ActiveRecord::Schema.define(version: 2020_07_13_173124) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id", "category", "month", "year"], name: "index_cms_on_acount_month_year_cat", unique: true
     t.index ["account_id"], name: "index_category_monthly_stats_on_account_id"
-    t.index ["category"], name: "index_category_monthly_stats_on_category", unique: true
     t.index ["month"], name: "index_category_monthly_stats_on_month"
     t.index ["year"], name: "index_category_monthly_stats_on_year"
   end
