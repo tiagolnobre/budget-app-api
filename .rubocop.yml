@@ -1,35 +1,41 @@
+require:
+  - rubocop-rspec
+  - rubocop-rails
+  - rubocop-performance
+
 AllCops:
+  DisplayCopNames: true
   Exclude:
-    - 'bin/**/*'
-    - 'db/**/*'
-    - 'vendor/**/*'
-    - 'spec/fixtures/**/*'
-    - 'tmp/**/*'
-  TargetRubyVersion: 2.4
+    - bin/**/*
+    - db/schema.rb
+    - db/seeds.rb
+  TargetRubyVersion: 2.7
+  TargetRailsVersion: 6.0
 
-Metrics/BlockLength:
-  Exclude:
-    - 'Rakefile'
-    - '**/*.rake'
-    - 'spec/**/*.rb'
-
-Rails:
-  Enabled: true
-
-Rails/HttpPositionalArguments:
-  Enabled: false
-
-HttpPositionalArguments:
-  Enabled: false
-
-HasAndBelongsToMany:
+Style/Documentation:
   Enabled: false
 
 Metrics/LineLength:
   Max: 120
-
-Documentation:
   Enabled: false
 
-FrozenStringLiteralComment:
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/LetSetup:
+  Enabled: false
+
+RSpec/ExampleLength:
   Enabled: false

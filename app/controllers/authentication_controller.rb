@@ -4,7 +4,7 @@ class AuthenticationController < ApplicationController
   before_action :authorize_request, except: :login
 
   # POST /auth/login
-  def login
+  def login # rubocop:disable Metrics/AbcSize
     @user = User.find_by(email: params[:email].downcase)
     if @user&.authenticate(params[:password])
       token = JsonWebToken.encode(user_id: @user.id)

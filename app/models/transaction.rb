@@ -25,7 +25,7 @@ class Transaction < ApplicationRecord
 
   strip_attributes only: [:category], allow_empty: true
 
-  has_one :account
+  has_one :account, dependent: :destroy
 
   scope :for_user, ->(user_id) { where(user_id: user_id) }
   scope :negative_sum, -> { where('amount < ?', 0).sum(&:amount) }
@@ -60,7 +60,7 @@ class Transaction < ApplicationRecord
   #   raise Transaction::ImportError, "date", "is invalid format, sould be %d/%m/%y."
   # end
 
-  def match_categories(description)
+  def match_categories(description) # rubocop:disable Metrics/CyclomaticComplexity
     case description
     when /(cobrança|energia|edp|servicos|prestacao)/i
       'bills'
