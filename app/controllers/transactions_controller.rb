@@ -16,7 +16,7 @@ class TransactionsController < ApplicationController
   def import_file
     transactions = transaction.import_file(params[:file], @current_user)
 
-    UpdateAccountBalance.perform_later(user: @current_user)
+    UpdateAccountBalance.perform_now(user: @current_user)
     UpdateMonthlyBalances.perform_later(
       user: @current_user,
       formatted_dates: transactions.map(&:date).map {|c| {month: c.month, year: c.year} }.uniq
