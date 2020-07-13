@@ -79,6 +79,34 @@ jobs:
           - vendor/bundle
 
       - run:
+          name: rubocop
+          command: bundle exec rails inquisition:rubocop
+
+      - run:
+          name: reek
+          command: bundle exec rails inquisition:reek
+
+      - run:
+          name: rubycritic
+          command: bundle exec rails inquisition:rubycritic
+
+      - run:
+          name: traceroute
+          command: bundle exec rails inquisition:traceroute
+
+      - run:
+          name: rails_best_practices
+          command: bundle exec rails inquisition:rails_best_practices
+
+      - run:
+          name: railroady
+          command: bundle exec rails inquisition:railroady
+
+      - run:
+          name: fasterer
+          command: bundle exec rails inquisition:fasterer
+
+      - run:
           name: bundle-audit
           command: bundle exec bundle-audit check --update
 
