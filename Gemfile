@@ -55,6 +55,9 @@ group :development, :test do
   gem 'rubocop', require: false
   gem 'rubocop-rails'
   gem 'rubocop-rspec', require: false
+
+  # audit libs
+  gem 'inquisition', github: 'rubygarage/inquisition'
 end
 
 group :development do
