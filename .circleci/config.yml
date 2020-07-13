@@ -40,8 +40,12 @@ jobs:
         paths:
           - vendor/bundle
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '*'
       # Wait for DB
-      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
+      #- run: dockerize -wait tcp://localhost:5432 -timeout 1m
 
       # Setup the environment
       # - run: cp .sample.env .env
@@ -78,33 +82,35 @@ jobs:
         paths:
           - vendor/bundle
 
+      # - run: bundle exec rails inquisition:install
+
       - run:
           name: rubocop
-          command: bundle exec rails inquisition:rubocop
+          command: bundle exec rubocop
 
-      - run:
-          name: reek
-          command: bundle exec rails inquisition:reek
+      # - run:
+      #     name: reek
+      #     command: bundle exec rails inquisition:reek
 
-      - run:
-          name: rubycritic
-          command: bundle exec rails inquisition:rubycritic
+      # - run:
+      #     name: rubycritic
+      #     command: bundle exec rails inquisition:rubycritic
 
-      - run:
-          name: traceroute
-          command: bundle exec rails inquisition:traceroute
+      # - run:
+      #     name: traceroute
+      #     command: bundle exec rails inquisition:traceroute
 
-      - run:
-          name: rails_best_practices
-          command: bundle exec rails inquisition:rails_best_practices
+      # - run:
+      #     name: rails_best_practices
+      #     command: bundle exec rails inquisition:rails_best_practices
 
-      - run:
-          name: railroady
-          command: bundle exec rails inquisition:railroady
+      # - run:
+      #     name: railroady
+      #     command: bundle exec rails inquisition:railroady
 
-      - run:
-          name: fasterer
-          command: bundle exec rails inquisition:fasterer
+      # - run:
+      #     name: fasterer
+      #     command: bundle exec rails inquisition:fasterer
 
       - run:
           name: bundle-audit
