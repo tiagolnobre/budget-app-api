@@ -21,7 +21,7 @@ class ApplicationController < ActionController::API
 
   private
 
-  def unauthorized(ex)
-    render json: { errors: ex.message }, status: :unauthorized
+  def unauthorized(exception)
+    render json: { errors: exception.message }, status: :unauthorized
   end
 end

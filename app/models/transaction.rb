@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Transaction < ApplicationRecord
-  class Transaction::ImportError < ArgumentError; end
+  class ImportError < ArgumentError; end
 
   TRANSACTION_VALID_HEADERS = %w[date description amount category].freeze
   TRANSACTION_CATEGORIES = %w[
