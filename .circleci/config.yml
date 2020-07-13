@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/budget-app-api
     docker:
-      - image: circleci/ruby:2.6.3-stretch-node
+      - image: circleci/ruby:2.7.1-buster
         environment:
           BUNDLER_VERSION: 2.1.4
           PGHOST: localhost
@@ -52,7 +52,7 @@ jobs:
 
   audits:
     docker:
-      - image: circleci/ruby:2.6.3-stretch-node
+      - image: circleci/ruby:2.7.1-buster
         environment:
           BUNDLER_VERSION: 2.1.4
           PGHOST: localhost
@@ -158,7 +158,7 @@ jobs:
 
   tests:
     docker:
-      - image: circleci/ruby:2.6.3-stretch-node
+      - image: circleci/ruby:2.7.1-buster
         environment:
           BUNDLER_VERSION: 2.1.4
           PGHOST: localhost
