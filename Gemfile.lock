@@ -164,7 +164,7 @@ GEM
     fasterer (0.8.3)
       colorize (~> 0.7)
       ruby_parser (>= 3.14.1)
-    ffi (1.12.2)
+    ffi (1.13.1)
     flay (2.12.1)
       erubis (~> 2.7.0)
       path_expander (~> 1.0)
