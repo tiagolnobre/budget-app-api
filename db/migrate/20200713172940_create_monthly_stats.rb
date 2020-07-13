@@ -1,4 +1,4 @@
-class CreateMonthlyStats < ActiveRecord::Migration[5.2]
+class CreateMonthlyStats < ActiveRecord::Migration[6.0]
   def change
     create_table :monthly_stats, id: :uuid do |t|
       t.references :account, type: :uuid, foreign_key: true, index: true

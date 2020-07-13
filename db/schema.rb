@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_17_222829) do
+ActiveRecord::Schema.define(version: 2020_07_13_173124) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -21,8 +22,8 @@ ActiveRecord::Schema.define(version: 2019_11_17_222829) do
     t.text "description"
     t.float "negative_balance"
     t.float "positive_balance"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_accounts_on_user_id"
   end
 
@@ -48,8 +49,8 @@ ActiveRecord::Schema.define(version: 2019_11_17_222829) do
     t.integer "year"
     t.float "negative_balance", default: 0.0
     t.float "positive_balance", default: 0.0
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id", "month", "year"], name: "index_monthly_stats_on_account_id_and_month_and_year", unique: true
     t.index ["account_id"], name: "index_monthly_stats_on_account_id"
   end
@@ -60,8 +61,8 @@ ActiveRecord::Schema.define(version: 2019_11_17_222829) do
     t.text "description"
     t.float "amount"
     t.text "category"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["category"], name: "index_transactions_on_category"
     t.index ["date"], name: "index_transactions_on_date"
     t.index ["user_id"], name: "index_transactions_on_user_id"
@@ -72,8 +73,8 @@ ActiveRecord::Schema.define(version: 2019_11_17_222829) do
     t.string "username"
     t.string "email"
     t.string "password_digest"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["id"], name: "index_users_on_id"
   end
 

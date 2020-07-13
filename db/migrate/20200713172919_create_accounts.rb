@@ -1,4 +1,4 @@
-class CreateAccounts < ActiveRecord::Migration[5.2]
+class CreateAccounts < ActiveRecord::Migration[6.0]
   def change
     create_table :accounts, id: :uuid do |t|
       t.references :user, type: :uuid, foreign_key: true, index: true
