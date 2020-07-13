@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::API
   include ActionController::Serialization
 
@@ -19,7 +21,7 @@ class ApplicationController < ActionController::API
 
   private
 
-  def unauthorized(ex)
-    render json: { errors: ex.message }, status: :unauthorized
+  def unauthorized(exception)
+    render json: { errors: exception.message }, status: :unauthorized
   end
 end

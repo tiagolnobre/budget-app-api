@@ -40,9 +40,13 @@ jobs:
         paths:
           - vendor/bundle
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - '*'
       # Wait for DB
-      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
-    
+      #- run: dockerize -wait tcp://localhost:5432 -timeout 1m
+
       # Setup the environment
       # - run: cp .sample.env .env
 
@@ -77,7 +81,37 @@ jobs:
         key: budget_app_api-{{ checksum "Gemfile.lock" }}
         paths:
           - vendor/bundle
-          
+
+      # - run: bundle exec rails inquisition:install
+
+      - run:
+          name: rubocop
+          command: bundle exec rubocop
+
+      # - run:
+      #     name: reek
+      #     command: bundle exec rails inquisition:reek
+
+      # - run:
+      #     name: rubycritic
+      #     command: bundle exec rails inquisition:rubycritic
+
+      # - run:
+      #     name: traceroute
+      #     command: bundle exec rails inquisition:traceroute
+
+      # - run:
+      #     name: rails_best_practices
+      #     command: bundle exec rails inquisition:rails_best_practices
+
+      # - run:
+      #     name: railroady
+      #     command: bundle exec rails inquisition:railroady
+
+      # - run:
+      #     name: fasterer
+      #     command: bundle exec rails inquisition:fasterer
+
       - run:
           name: bundle-audit
           command: bundle exec bundle-audit check --update
@@ -85,6 +119,42 @@ jobs:
       - run:
           name: brakeman
           command: bundle exec brakeman --color -o brakeman_results.html -f plain
+
+      - run:
+          name: active_record_doctor:unindexed_foreign_keys
+          command: bundle exec rake active_record_doctor:unindexed_foreign_keys
+
+      - run:
+          name: active_record_doctor:extraneous_indexes
+          command: bundle exec rake active_record_doctor:extraneous_indexes
+
+      - run:
+          name: active_record_doctor:missing_foreign_keys
+          command: bundle exec rake active_record_doctor:missing_foreign_keys
+
+      - run:
+          name: active_record_doctor:unindexed_deleted_at
+          command: bundle exec rake active_record_doctor:unindexed_deleted_at
+
+      - run:
+          name: active_record_doctor:undefined_table_references
+          command: bundle exec rake active_record_doctor:undefined_table_references
+
+      - run:
+          name: active_record_doctor:missing_unique_indexes
+          command: bundle exec rake active_record_doctor:missing_unique_indexes
+
+      - run:
+          name: active_record_doctor:missing_non_null_constraint
+          command: bundle exec rake active_record_doctor:missing_non_null_constraint
+
+      - run:
+          name: active_record_doctor:missing_presence_validation
+          command: bundle exec rake active_record_doctor:missing_presence_validation
+
+      - run:
+          name: find missing indexes
+          command: bundle exec lol_dba db:find_indexes
 
   tests:
     docker:
@@ -132,11 +202,11 @@ jobs:
 
       # Run the tests
       # - run: bundle exec rspec
-      
+
       - run:
           name: Run unit tests
           command: |
-            bundle exec rspec 
+            bundle exec rspec
       # --format RspecJunitFormatter \
       #                    --out test_results/rspec.xml \
       #                    --format progress

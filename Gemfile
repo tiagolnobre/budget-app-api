@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -23,7 +25,7 @@ gem 'activerecord-import'
 
 gem 'active_model_serializers'
 
-gem 'rack-cors', :require => 'rack/cors'
+gem 'rack-cors', require: 'rack/cors'
 
 gem 'rollbar'
 
@@ -31,6 +33,8 @@ gem 'sidekiq', '~> 6.1.0'
 gem 'sidekiq-status'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+
+gem 'strip_attributes'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
@@ -41,25 +45,36 @@ gem 'bootsnap', '>= 1.1.0', require: false
 group :development, :test do
   gem 'pry'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'rspec'
-  gem 'rspec-rails'
-  gem 'factory_bot_rails'
+  gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'capybara'
   gem 'database_cleaner'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem 'rubocop', require: false
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec', require: false
+
+  # audit libs
+  gem 'inquisition', github: 'rubygarage/inquisition'
 end
 
 group :development do
-  gem 'listen', '>= 3.0.5', '<= 3.2.1'
-  gem 'bundle-audit'
-  gem 'bullet'
   gem 'brakeman'
+  gem 'bullet'
+  gem 'bundle-audit'
+  gem 'listen', '>= 3.0.5', '<= 3.2.1'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+
+  # audit libs
+  gem 'active_record_doctor'
+  gem 'lol_dba'
 end
 
-gem 'dotenv-rails', groups: [:development, :test]
+gem 'dotenv-rails', groups: %i[development test]
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data'
