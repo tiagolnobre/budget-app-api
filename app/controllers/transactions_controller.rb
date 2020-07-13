@@ -30,7 +30,7 @@ class TransactionsController < ApplicationController
   private
 
   def missing_headers?
-   csv_headers = CSV.open(params[:file].tempfile, :headers => true, header_converters: transaction.header_converter).read.headers
+    csv_headers = CSV.open(params[:file].tempfile, headers: true, header_converters: transaction.header_converter).read.headers
     unless match_headers?(csv_headers)
       render json: { errors: "Invalid headers. Missing: #{Transaction::TRANSACTION_VALID_HEADERS - csv_headers}" }, status: :unprocessable_entity
     end
