@@ -48,6 +48,7 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'capybara'
   gem 'database_cleaner'
+  gem 'dotenv-rails'
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'rspec'
@@ -75,7 +76,9 @@ group :development do
   gem 'lol_dba'
 end
 
-gem 'dotenv-rails', groups: %i[development test]
+group :test do
+  gem 'rspec_junit_formatter'
+end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data'
