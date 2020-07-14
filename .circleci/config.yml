@@ -1,226 +1,182 @@
-version: 2
+# This code is licensed from CircleCI to the user under the MIT license. See
+# https://circleci.com/orbs/registry/licensing for details.
+version: 2.1
+description: "Building Ruby applications"
+
+executors:
+  ruby:
+    docker:
+      - image: circleci/ruby:2.7.1-buster
+        environment:
+          BUNDLER_VERSION: 2.1.4
+          PGHOST: localhost
+          PGUSER: budget-app-api
+          RAILS_ENV: test
+  ruby-postgres:
+    docker:
+      - image: circleci/ruby:2.7.1-buster
+        environment:
+#          DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
+          POSTGRES_USER: budget_app_api
+          POSTGRES_PASSWORD: 123qweasd
+          POSTGRES_DB: budget_app_api
+      - image: circleci/postgres:9.6.5-alpine-ram
+#  ruby-postgres-browsers:
+#    docker:
+#      - image: circleci/ruby:2.7-browsers
+#        environment:
+#          DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
+#      - image: circleci/postgres:9.6.5-alpine-ram
+
+commands:
+  resolve-dependencies:
+    parameters:
+      resources-cache-key:
+        description: "The cache key under which the dependencies will be looked up / made available for future builds"
+        type: string
+        default: "v1-{{ checksum \"Gemfile.lock\" }}"
+    steps:
+      - restore_cache:
+          keys:
+            - resources-<< parameters.resources-cache-key >>
+      - run:
+          name: "Resolve and install dependencies"
+          command: |
+            sudo gem install --force bundler
+            bundle config ignore_messages.httparty true
+            bundle config deployment true
+            bundle config path vendor/bundle
+            if [ -z ${GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN} ]; then
+              echo "Environment variable GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN is not set - will not setup bundler access to betterdoc-org private packages on GitHub."
+            else
+              echo "Environment variable GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN is set. Will setup bundler access to betterdoc-org private packages on GitHub."
+              bundle config https://rubygems.pkg.github.com/betterdoc-org ${GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN}
+            fi
+            bundle install --jobs=8
+      - save_cache:
+          paths:
+            - "./vendor/bundle"
+          key: resources-<< parameters.resources-cache-key >>
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - "./vendor/bundle"
+  run-linter:
+    steps:
+      - run:
+          name: "Run Rubocop verifications"
+          command: |
+            mkdir -p /tmp/linter-results/rubocop
+            bundle exec rubocop \
+              --require rubocop/formatter/junit_formatter \
+              --format RuboCop::Formatter::JUnitFormatter \
+              --out /tmp/linter-results/rubocop/results.xml
+      - store_test_results:
+          path: /tmp/linter-results
+  run-tests-rspec:
+    steps:
+      - run:
+          name: "Run unit tests using RSpec"
+          command: |
+            mkdir -p /tmp/tests-rspec-results
+            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
+            bundle exec rspec \
+              --format progress \
+              --format RspecJunitFormatter \
+              --out /tmp/tests-rspec-results/rspec.xml \
+              $TEST_FILES
+      - store_test_results:
+          path: /tmp/tests-rspec-results
+  run-tests-rake:
+    steps:
+      - run:
+          name: "Run unit tests using Rake"
+          command: |
+            RAILS_ENV=test bundle exec rake test
+      - store_test_results:
+          path: test/reports
+  run-tests-rails:
+    steps:
+      - run:
+          name: "Run unit tests using Rails"
+          command: |
+            RAILS_ENV=test bundle exec rails test
+      - store_test_results:
+          path: test/reports
+  run-system-tests-rails:
+    steps:
+      - run:
+          name: "Run system tests using Rails"
+          command: |
+            RAILS_ENV=test bundle exec rails test:system
+      - store_test_results:
+          path: test/reports
+  setup-postgres:
+    steps:
+      - run:
+          name: Setup PostgreSQL test database
+          command: |
+            bundle exec rake db:setup RAILS_ENV=test
+            bundle exec rake db:migrate RAILS_ENV=test
 
 jobs:
   build:
-    working_directory: ~/budget-app-api
-    docker:
-      - image: circleci/ruby:2.7.1-buster
-        environment:
-          BUNDLER_VERSION: 2.1.4
-          PGHOST: localhost
-          PGUSER: budget-app-api
-          RAILS_ENV: test
-      - image: postgres:9.5
-        environment:
-          POSTGRES_USER: budget_app_api
-          POSTGRES_PASSWORD: 123qweasd
-          POSTGRES_DB: budget_app_api
-
+    executor: ruby
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/budget-app-api
-
-      - run:
-          name: Install latest Bundler
-          command: gem install bundler
-
-      # Restore Cached Dependencies
-      - type: cache-restore
-        name: Restore bundle cache
-        key: budget_app_api-{{ checksum "Gemfile.lock" }}
-
-      # Bundle install dependencies
-      - run: bundle install --path vendor/bundle
-
-      # Cache Dependencies
-      - type: cache-save
-        name: Store bundle cache
-        key: budget_app_api-{{ checksum "Gemfile.lock" }}
-        paths:
-          - vendor/bundle
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - '*'
-      # Wait for DB
-      #- run: dockerize -wait tcp://localhost:5432 -timeout 1m
-
-      # Setup the environment
-      # - run: cp .sample.env .env
-
-  audits:
-    docker:
-      - image: circleci/ruby:2.7.1-buster
-        environment:
-          BUNDLER_VERSION: 2.1.4
-          PGHOST: localhost
-          PGUSER: budget-app-api
-          RAILS_ENV: test
+      - resolve-dependencies
+      - run-linter
+  build-rspec:
+    executor: ruby
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/budget-app-api
-
-      - run:
-          name: Install latest Bundler
-          command: gem install bundler
-
-      # Restore Cached Dependencies
-      - type: cache-restore
-        name: Restore bundle cache
-        key: budget_app_api-{{ checksum "Gemfile.lock" }}
-
-      # Bundle install dependencies
-      - run: bundle install --path vendor/bundle
-
-      # Cache Dependencies
-      - type: cache-save
-        name: Store bundle cache
-        key: budget_app_api-{{ checksum "Gemfile.lock" }}
-        paths:
-          - vendor/bundle
-
-      # - run: bundle exec rails inquisition:install
-
-      - run:
-          name: rubocop
-          command: bundle exec rubocop
-
-      # - run:
-      #     name: reek
-      #     command: bundle exec rails inquisition:reek
-
-      # - run:
-      #     name: rubycritic
-      #     command: bundle exec rails inquisition:rubycritic
-
-      # - run:
-      #     name: traceroute
-      #     command: bundle exec rails inquisition:traceroute
-
-      # - run:
-      #     name: rails_best_practices
-      #     command: bundle exec rails inquisition:rails_best_practices
-
-      # - run:
-      #     name: railroady
-      #     command: bundle exec rails inquisition:railroady
-
-      # - run:
-      #     name: fasterer
-      #     command: bundle exec rails inquisition:fasterer
-
-      - run:
-          name: bundle-audit
-          command: bundle exec bundle-audit check --update
-
-      - run:
-          name: brakeman
-          command: bundle exec brakeman --color -o brakeman_results.html -f plain
-
-      - run:
-          name: active_record_doctor:unindexed_foreign_keys
-          command: bundle exec rake active_record_doctor:unindexed_foreign_keys
-
-      - run:
-          name: active_record_doctor:extraneous_indexes
-          command: bundle exec rake active_record_doctor:extraneous_indexes
-
-      - run:
-          name: active_record_doctor:missing_foreign_keys
-          command: bundle exec rake active_record_doctor:missing_foreign_keys
-
-      - run:
-          name: active_record_doctor:unindexed_deleted_at
-          command: bundle exec rake active_record_doctor:unindexed_deleted_at
-
-      - run:
-          name: active_record_doctor:undefined_table_references
-          command: bundle exec rake active_record_doctor:undefined_table_references
-
-      - run:
-          name: active_record_doctor:missing_unique_indexes
-          command: bundle exec rake active_record_doctor:missing_unique_indexes
-
-      - run:
-          name: active_record_doctor:missing_non_null_constraint
-          command: bundle exec rake active_record_doctor:missing_non_null_constraint
-
-      - run:
-          name: active_record_doctor:missing_presence_validation
-          command: bundle exec rake active_record_doctor:missing_presence_validation
-
-      - run:
-          name: find missing indexes
-          command: bundle exec lol_dba db:find_indexes
-
-  tests:
-    docker:
-      - image: circleci/ruby:2.7.1-buster
-        environment:
-          BUNDLER_VERSION: 2.1.4
-          PGHOST: localhost
-          PGUSER: budget-app-api
-          RAILS_ENV: test
-      - image: postgres:9.5
-        environment:
-          POSTGRES_USER: budget_app_api
-          POSTGRES_PASSWORD: 123qweasd
-          POSTGRES_DB: budget_app_api
-
-    parallelism: 1
+      - resolve-dependencies
+      - run-linter
+      - run-tests-rspec
+  build-rspec-with-postgres:
+    executor: ruby-postgres
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/budget-app-api
-      - run:
-          name: Install latest Bundler
-          command: gem install bundler
-
-      # Restore Cached Dependencies
-      - type: cache-restore
-        name: Restore bundle cache
-        key: budget_app_api-{{ checksum "Gemfile.lock" }}
-
-      # Bundle install dependencies
-      - run: bundle install --path vendor/bundle
-
-      # Cache Dependencies
-      - type: cache-save
-        name: Store bundle cache
-        key: budget_app_api-{{ checksum "Gemfile.lock" }}
-        paths:
-          - vendor/bundle
-
-      # Wait for DB
-      - run: dockerize -wait tcp://localhost:5432 -timeout 1m
-
-      # Setup the database
-      - run: bundle exec rake db:setup
-
-      # Run the tests
-      # - run: bundle exec rspec
-
-      - run:
-          name: Run unit tests
-          command: |
-            bundle exec rspec
-      # --format RspecJunitFormatter \
-      #                    --out test_results/rspec.xml \
-      #                    --format progress
-      - store_test_results:
-          path: test_results
-
-workflows:
-  version: 2
-  build_test:
-    jobs:
-      - build
-      - audits:
-          requires:
-            - build
-      - tests:
-          requires:
-            - build
+      - resolve-dependencies
+      - run-linter
+      - setup-postgres
+      - run-tests-rspec
+  build-rake-test:
+    executor: ruby
+    steps:
+      - checkout
+      - resolve-dependencies
+      - run-linter
+      - run-tests-rake
+  build-rake-test-with-postgres:
+    executor: ruby-postgres
+    steps:
+      - checkout
+      - resolve-dependencies
+      - run-linter
+      - setup-postgres
+      - run-tests-rake
+  build-rails-test:
+    executor: ruby
+    steps:
+      - checkout
+      - resolve-dependencies
+      - run-linter
+      - run-tests-rails
+  build-rails-test-with-postgres:
+    executor: ruby-postgres
+    steps:
+      - checkout
+      - resolve-dependencies
+      - run-linter
+      - setup-postgres
+      - run-tests-rails
+  build-rails-test-and-system-test-with-postgres:
+    executor: ruby-postgres-browsers
+    steps:
+      - checkout
+      - resolve-dependencies
+      - run-linter
+      - setup-postgres
+      - run-tests-rails
+      - run-system-tests-rails
