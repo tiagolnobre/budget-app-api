@@ -4,8 +4,10 @@ require:
   - rubocop-performance
 
 AllCops:
+  NewCops: enable
   DisplayCopNames: true
   Exclude:
+    - vendor/bundle/**/*
     - bin/**/*
     - db/schema.rb
     - db/seeds.rb

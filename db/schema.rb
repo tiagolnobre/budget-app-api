@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_13_173124) do
+ActiveRecord::Schema.define(version: 2020_07_14_133604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 2020_07_13_173124) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id", "category", "month", "year"], name: "index_cms_on_acount_month_year_cat", unique: true
     t.index ["account_id"], name: "index_category_monthly_stats_on_account_id"
+    t.index ["category"], name: "index_category_monthly_stats_on_category", unique: true
     t.index ["month"], name: "index_category_monthly_stats_on_month"
     t.index ["year"], name: "index_category_monthly_stats_on_year"
   end
@@ -74,7 +75,9 @@ ActiveRecord::Schema.define(version: 2020_07_13_173124) do
     t.string "password_digest"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["id"], name: "index_users_on_id"
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "accounts", "users"

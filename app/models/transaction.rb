@@ -60,7 +60,7 @@ class Transaction < ApplicationRecord
   #   raise Transaction::ImportError, "date", "is invalid format, sould be %d/%m/%y."
   # end
 
-  def match_categories(description) # rubocop:disable Metrics/CyclomaticComplexity
+  def match_categories(description)
     case description
     when /(cobrança|energia|edp|servicos|prestacao)/i
       'bills'

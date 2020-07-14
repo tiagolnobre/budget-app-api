@@ -10,7 +10,7 @@ executors:
         environment:
           BUNDLER_VERSION: 2.1.4
           PGHOST: localhost
-          PGUSER: budget-app-api
+          PGUSER: budget_app_api
           RAILS_ENV: test
   ruby-postgres:
     docker:
@@ -21,6 +21,10 @@ executors:
           POSTGRES_PASSWORD: 123qweasd
           POSTGRES_DB: budget_app_api
       - image: circleci/postgres:9.6.5-alpine-ram
+        environment:
+          POSTGRES_USER: budget_app_api
+          POSTGRES_PASSWORD: 123qweasd
+          POSTGRES_DB: budget_app_api
 #  ruby-postgres-browsers:
 #    docker:
 #      - image: circleci/ruby:2.7-browsers
@@ -121,11 +125,13 @@ commands:
 
 jobs:
   build:
-    executor: ruby
+    executor: ruby-postgres
     steps:
       - checkout
       - resolve-dependencies
       - run-linter
+      - setup-postgres
+      - run-tests-rspec
   build-rspec:
     executor: ruby
     steps:
