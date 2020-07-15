@@ -1,7 +1,7 @@
-# README
+# budget-app-api
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+[![CodeFactor](https://www.codefactor.io/repository/github/tiagolnobre/budget-app-api/badge?s=205965391749425d2b98ca20da508691e826022f)](https://www.codefactor.io/repository/github/tiagolnobre/budget-app-api)
+
 
 Things you may want to cover:
 
