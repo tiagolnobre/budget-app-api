@@ -30,7 +30,6 @@ gem 'rack-cors', require: 'rack/cors'
 gem 'rollbar'
 
 gem 'sidekiq', '~> 6.1.0'
-gem 'sidekiq-status'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
