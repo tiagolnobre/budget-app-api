@@ -3,6 +3,8 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
+ruby File.read('.ruby-version').strip
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.1'
 # Use Puma as the app server
@@ -56,9 +58,10 @@ group :development, :test do
   gem 'rubocop-performance'
   gem 'rubocop-rails'
   gem 'rubocop-rspec', require: false
+  gem 'simplecov', require: false
 
   # audit libs
-  gem 'inquisition', github: 'rubygarage/inquisition'
+  # gem 'inquisition', github: 'rubygarage/inquisition'
 end
 
 group :development do
