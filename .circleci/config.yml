@@ -1,12 +1,9 @@
-# This code is licensed from CircleCI to the user under the MIT license. See
-# https://circleci.com/orbs/registry/licensing for details.
 version: 2.1
-description: "Building Ruby applications"
 
 executors:
   ruby:
     docker:
-      - image: circleci/ruby:2.6.3-stretch-node
+      - image: circleci/ruby:2.7.1-stretch-node
         environment:
           BUNDLER_VERSION: 2.1.4
           PGHOST: localhost
@@ -91,30 +88,7 @@ commands:
               $TEST_FILES
       - store_test_results:
           path: /tmp/tests-rspec-results
-  run-tests-rake:
-    steps:
-      - run:
-          name: "Run unit tests using Rake"
-          command: |
-            RAILS_ENV=test bundle exec rake test
-      - store_test_results:
-          path: test/reports
-  run-tests-rails:
-    steps:
-      - run:
-          name: "Run unit tests using Rails"
-          command: |
-            RAILS_ENV=test bundle exec rails test
-      - store_test_results:
-          path: test/reports
-  run-system-tests-rails:
-    steps:
-      - run:
-          name: "Run system tests using Rails"
-          command: |
-            RAILS_ENV=test bundle exec rails test:system
-      - store_test_results:
-          path: test/reports
+
   setup-postgres:
     steps:
       - run:
@@ -129,60 +103,23 @@ jobs:
     steps:
       - checkout
       - resolve-dependencies
-      - run-linter
-      - setup-postgres
-      - run-tests-rspec
-  build-rspec:
-    executor: ruby
-    steps:
-      - checkout
-      - resolve-dependencies
-      - run-linter
-      - run-tests-rspec
-  build-rspec-with-postgres:
+  linter:
     executor: ruby-postgres
     steps:
-      - checkout
-      - resolve-dependencies
       - run-linter
+  test:
+    executor: ruby-postgres
+    steps:
       - setup-postgres
       - run-tests-rspec
-  build-rake-test:
-    executor: ruby
-    steps:
-      - checkout
-      - resolve-dependencies
-      - run-linter
-      - run-tests-rake
-  build-rake-test-with-postgres:
-    executor: ruby-postgres
-    steps:
-      - checkout
-      - resolve-dependencies
-      - run-linter
-      - setup-postgres
-      - run-tests-rake
-  build-rails-test:
-    executor: ruby
-    steps:
-      - checkout
-      - resolve-dependencies
-      - run-linter
-      - run-tests-rails
-  build-rails-test-with-postgres:
-    executor: ruby-postgres
-    steps:
-      - checkout
-      - resolve-dependencies
-      - run-linter
-      - setup-postgres
-      - run-tests-rails
-  build-rails-test-and-system-test-with-postgres:
-    executor: ruby-postgres-browsers
-    steps:
-      - checkout
-      - resolve-dependencies
-      - run-linter
-      - setup-postgres
-      - run-tests-rails
-      - run-system-tests-rails
+
+workflows:
+  build_and_test:
+    jobs:
+      - build
+      - linter:
+          requires:
+            - build
+      - test:
+          requires:
+            - build
