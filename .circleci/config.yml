@@ -106,14 +106,19 @@ jobs:
   linter:
     executor: ruby-postgres
     steps:
+      - checkout
+      - resolve-dependencies
       - run-linter
   test:
     executor: ruby-postgres
     steps:
+      - checkout
+      - resolve-dependencies
       - setup-postgres
       - run-tests-rspec
 
 workflows:
+  version: 2
   build_and_test:
     jobs:
       - build
