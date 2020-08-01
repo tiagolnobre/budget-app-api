@@ -105,14 +105,10 @@ jobs:
       - resolve-dependencies
   linter:
     executor: ruby-postgres
-    requires:
-      - build
     steps:
       - run-linter
   test:
     executor: ruby-postgres
-    requires:
-      - build
     steps:
       - setup-postgres
       - run-tests-rspec
@@ -121,5 +117,9 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - linter
-      - test
+      - linter:
+          requires:
+            - build
+      - test:
+          requires:
+            - build
