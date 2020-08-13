@@ -14,7 +14,7 @@ class TransactionsController < ApplicationController
   end
 
   # POST transactions/import
-  def import_file # rubocop:disable Metrics/AbcSize
+  def import_file
     transactions = transaction.import_file(params[:file], @current_user)
 
     UpdateAccountBalance.perform_now(user: @current_user)
