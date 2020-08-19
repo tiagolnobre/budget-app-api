@@ -9,7 +9,7 @@ addons:
     packages:
 
 rvm:
-  - 2.6.3
+  - 2.6.6
 
 cache:
   yarn: true
