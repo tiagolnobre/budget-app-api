@@ -37,6 +37,8 @@ gem 'sidekiq', '~> 6.1.0'
 
 gem 'strip_attributes'
 
+gem 'sendgrid-ruby'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 

@@ -343,6 +343,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec
+  sendgrid-ruby
   shoulda-matchers
   sidekiq (~> 6.1.0)
   simplecov
