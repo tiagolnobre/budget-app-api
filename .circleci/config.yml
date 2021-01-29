@@ -120,6 +120,7 @@ jobs:
       - checkout
       - resolve-dependencies
       - run-linter
+      - run-security-vulnerabilities
   test:
     executor: ruby-postgres
     steps:
