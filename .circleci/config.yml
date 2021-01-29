@@ -90,6 +90,16 @@ commands:
           path: /tmp/tests-rspec-results
       - store_artifacts:
           path: ./doc/coverage
+  run-security-vulnerabilities:
+    steps:
+      - run:
+          name: Brakeman security vulnerabilities
+          command: |
+            if [ $CIRCLE_NODE_INDEX -eq 0 ]
+              then
+              echo "Running brakeman..."
+              bundle exec brakeman --no-pager
+            fi
 
   setup-postgres:
     steps:
