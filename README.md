@@ -4,22 +4,25 @@
 
 [Docs](https://documenter.getpostman.com/view/10836/TVt2eQYx)
 
+![favicon-16x16](https://github.com/heroku/favicon/raw/master/favicon.iconset/icon_16x16.png) Heroku:
+- [Prod](https://app-budget-api.herokuapp.com/)
+- [Staging](https://app-budget-api-staging.herokuapp.com/)
+
 Things you may want to cover:
 
-* Ruby version
+* Local setup
 
-* System dependencies
+ - Start services
+ `docker-compose up`
 
-* Configuration
+ - Create database
+ `bundle exec rails setup`
 
-* Database creation
-
-* Database initialization
+ API: localhost:3000
+ Sidekiq-web: localhost:3001
 
 * How to run the test suite
 
-* Services (job queues, cache servers, search engines, etc.)
+`bundle exec rspec`
 
-* Deployment instructions
 
-* ...

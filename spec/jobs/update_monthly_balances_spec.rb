@@ -5,6 +5,8 @@ require 'rails_helper'
 describe UpdateMonthlyBalances, type: :job do
   before { ActiveJob::Base.queue_adapter = :test }
 
+  after { ActiveJob::Base.queue_adapter = :inline }
+
   let(:transaction) { create(:transaction) }
   let(:account) { create(:account, user: transaction.user) }
   let(:formatted_dates) { [{ month: transaction.date.month, year: transaction.date.year }] }
