@@ -3,7 +3,7 @@ version: 2.1
 executors:
   ruby:
     docker:
-      - image: circleci/ruby:3.0.1-stretch-node
+      - image: circleci/ruby:3.0.2-stretch-node
         environment:
           BUNDLER_VERSION: 2.1.4
           PGHOST: localhost
@@ -11,7 +11,7 @@ executors:
           RAILS_ENV: test
   ruby-postgres:
     docker:
-      - image: circleci/ruby:3.0.1-buster
+      - image: circleci/ruby:3.0.2-buster
         environment:
 #          DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
           POSTGRES_USER: budget_app_api
@@ -24,7 +24,7 @@ executors:
           POSTGRES_DB: budget_app_api
 #  ruby-postgres-browsers:
 #    docker:
-#      - image: circleci/ruby:3.0.1-browsers
+#      - image: circleci/ruby:3.0.2-browsers
 #        environment:
 #          DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
 #      - image: circleci/postgres:9.6.5-alpine-ram
