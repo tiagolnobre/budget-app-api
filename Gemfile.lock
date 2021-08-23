@@ -247,7 +247,7 @@ GEM
     ruby-progressbar (1.11.0)
     shoulda-matchers (5.0.0)
       activesupport (>= 5.2.0)
-    sidekiq (6.2.1)
+    sidekiq (6.2.2)
       connection_pool (>= 2.2.2)
       rack (~> 2.0)
       redis (>= 4.2.0)
@@ -319,7 +319,7 @@ DEPENDENCIES
   rubocop-rails
   rubocop-rspec
   shoulda-matchers
-  sidekiq (~> 6.2.1)
+  sidekiq (~> 6.2.2)
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
