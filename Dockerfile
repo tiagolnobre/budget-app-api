@@ -1,4 +1,4 @@
-FROM ruby:3.0.2-alpine
+FROM ruby:3.1.0-alpine
 
 RUN apk --no-cache add build-base nodejs postgresql-dev
 
