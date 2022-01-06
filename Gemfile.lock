@@ -44,7 +44,7 @@ GEM
       activemodel (>= 4.1, < 6.2)
       case_transform (>= 0.2)
       jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
-    active_record_doctor (1.8.0)
+    active_record_doctor (1.9.0)
       activerecord (>= 4.2.0)
     activejob (6.1.4.4)
       activesupport (= 6.1.4.4)
