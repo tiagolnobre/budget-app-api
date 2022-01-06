@@ -33,7 +33,7 @@ gem 'rollbar'
 
 gem 'skylight'
 
-gem 'sidekiq', '~> 6.2.2'
+gem 'sidekiq', '~> 6.3.1'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
