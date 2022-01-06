@@ -271,7 +271,7 @@ GEM
       sprockets (>= 3.0.0)
     strip_attributes (1.11.0)
       activemodel (>= 3.0, < 7.0)
-    thor (1.1.0)
+    thor (1.2.1)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2021.5)
