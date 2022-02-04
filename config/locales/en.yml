@@ -31,3 +31,8 @@
 
 en:
   hello: "Hello world"
+
+  notifications:
+    new_message_notification:
+      messages:
+        new_record: Welcome to the Budget Application
