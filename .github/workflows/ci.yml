@@ -1,0 +1,55 @@
+name: CI Tests
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - master
+jobs:
+  postgres:
+    runs-on: ubuntu-latest
+    name: Ruby ${{ matrix.version }} ${{ matrix.gemfile }}
+    strategy:
+      matrix:
+        ruby: ['3.0', '3.1']
+        gemfile:
+        gemfile:
+          - Gemfile
+          - gemfiles/Gemfile.rails_6_1
+          - gemfiles/Gemfile.rails_7
+          - gemfiles/Gemfile.rails_master
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/Gemfile_${{ matrix.gemfile }}
+      BUNDLE_PATH_RELATIVE_TO_CWD: true
+
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: test
+        ports: ['5432:5432']
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler: default
+          bundler-cache: true
+
+      - name: Rubocop check
+        run: bundle exec rubocop
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgres://postgres:password@localhost:5432/test
+          RAILS_ENV: test
+        run: |
+          bundle exec rails db:test:prepare
+          bundle exec rails test
