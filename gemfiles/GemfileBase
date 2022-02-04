@@ -30,6 +30,9 @@ gem 'rollbar'
 # gem 'skylight'
 
 gem 'sidekiq', '~> 6.4.1'
+
+gem "noticed", "~> 1.5"
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
