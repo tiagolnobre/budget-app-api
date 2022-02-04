@@ -20,7 +20,7 @@ jobs:
           - gemfiles/Gemfile.rails_7
           - gemfiles/Gemfile.rails_master
     env:
-      BUNDLE_GEMFILE: ${{ github.workspace }}/Gemfile_${{ matrix.gemfile }}
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
       BUNDLE_PATH_RELATIVE_TO_CWD: true
 
     services:
