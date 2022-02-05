@@ -121,14 +121,14 @@ GEM
       railties (>= 5.0.0)
     faker (2.19.0)
       i18n (>= 1.6, < 2)
-    ffi (1.15.4)
+    ffi (1.15.5)
     globalid (1.0.0)
       activesupport (>= 5.0)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     jsonapi-renderer (0.2.2)
     jwt (2.3.0)
-    listen (3.7.0)
+    listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     lol_dba (2.2.0)
@@ -306,7 +306,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   jwt
-  listen (>= 3.0.5, <= 3.7.0)
+  listen (>= 3.0.5, <= 3.8.0)
   lol_dba
   pg (~> 1.0)
   pry
