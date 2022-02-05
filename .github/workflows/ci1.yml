@@ -21,7 +21,8 @@ jobs:
           # - gemfiles/Gemfile.rails_master
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
-      # BUNDLE_PATH_RELATIVE_TO_CWD: true
+      BUNDLE_PATH_RELATIVE_TO_CWD: true
+      ACTIONS_STEP_DEBUG: true
 
     services:
       postgres:
@@ -44,7 +45,7 @@ jobs:
         uses: ruby/setup-ruby@v1.97.0
         with:
           ruby-version: ${{ matrix.ruby }}
-          # bundler-cache: true
+          bundler-cache: true
       - name: Install dependencies
         run: bundle install --jobs 5 --retry 19
 
