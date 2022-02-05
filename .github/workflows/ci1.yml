@@ -13,7 +13,7 @@ jobs:
     name: Ruby ${{ matrix.version }} ${{ matrix.gemfile }}
     strategy:
       matrix:
-        ruby: ['3.0', '3.1']
+        ruby: ['3.0.3', '3.1']
         gemfile:
           - Gemfile
           - gemfiles/Gemfile.rails_6_1
