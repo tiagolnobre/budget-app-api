@@ -17,11 +17,11 @@ jobs:
         gemfile:
           - Gemfile
           - gemfiles/Gemfile.rails_6_1
-          - gemfiles/Gemfile.rails_7
-          - gemfiles/Gemfile.rails_master
+          # - gemfiles/Gemfile.rails_7
+          # - gemfiles/Gemfile.rails_master
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
-      BUNDLE_PATH_RELATIVE_TO_CWD: true
+      # BUNDLE_PATH_RELATIVE_TO_CWD: true
 
     services:
       postgres:
@@ -31,16 +31,22 @@ jobs:
           POSTGRES_PASSWORD: password
           POSTGRES_DB: test
         ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@master
 
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@v1.97.0
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler: default
-          bundler-cache: true
+          # bundler-cache: true
+      - name: Install dependencies
+        run: bundle install --jobs 5 --retry 19
 
       - name: Rubocop check
         run: bundle exec rubocop
