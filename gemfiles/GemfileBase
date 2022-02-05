@@ -27,7 +27,7 @@ gem 'rack-cors', require: 'rack/cors'
 
 gem 'rollbar'
 
-gem 'skylight'
+# gem 'skylight'
 
 gem 'sidekiq', '~> 6.3.1'
 # Use Capistrano for deployment
