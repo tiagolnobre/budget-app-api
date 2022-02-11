@@ -1,19 +1,20 @@
 version: 2.1
 
+orbs:
+  ruby: circleci/ruby@1.0
+
 executors:
-  ruby:
-    docker:
-      - image: circleci/ruby:3.0.3-stretch-node
-        environment:
-          BUNDLER_VERSION: 2.1.4
-          PGHOST: localhost
-          PGUSER: budget_app_api
-          RAILS_ENV: test
   ruby-postgres:
+    parameters:
+      ruby_version:
+        type: string
+      gemfile:
+        type: string
     docker:
-      - image: circleci/ruby:3.0.3-buster
+      - image: "circleci/ruby:<< parameters.ruby_version >>"
         environment:
-#          DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
+          GEMFILE_NAME: <<parameters.gemfile>>
+#         DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
           POSTGRES_USER: budget_app_api
           POSTGRES_PASSWORD: 123qweasd
           POSTGRES_DB: budget_app_api
@@ -22,12 +23,6 @@ executors:
           POSTGRES_USER: budget_app_api
           POSTGRES_PASSWORD: 123qweasd
           POSTGRES_DB: budget_app_api
-#  ruby-postgres-browsers:
-#    docker:
-#      - image: circleci/ruby:3.0.2-browsers
-#        environment:
-#          DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
-#      - image: circleci/postgres:9.6.5-alpine-ram
 
 commands:
   resolve-dependencies:
@@ -123,15 +118,6 @@ jobs:
       - run-security-vulnerabilities
   test:
     executor: ruby-postgres
-    parameters:
-      ruby_version:
-        type: string
-      gemfile:
-        type: string
-    docker:
-      - image: "circleci/ruby:<< parameters.ruby_version >>"
-    environment:
-      GEMFILE_NAME: <<parameters.gemfile>>
     steps:
       - checkout
       - resolve-dependencies
@@ -140,16 +126,17 @@ jobs:
 
 workflows:
   version: 2
-  build_and_test:
+  pipeline:
     jobs:
       - build
       - linter:
           requires:
             - build
       - test:
+          requires:
+            - build
           matrix:
             parameters:
               ruby_version: ['3.0.3', '3.1']
               gemfile: ["Gemfilee", "gemfiles/Gemfile.rails_6_1"]
-          requires:
-            - build
+
