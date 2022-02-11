@@ -1,0 +1,139 @@
+name: "CI"
+
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - master
+
+jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          # ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+      - uses: reviewdog/action-rubocop@v1
+        with:
+          filter_mode: nofilter
+          reporter: github-check
+          github_token: ${{ secrets.github_token }}
+          rubocop_extensions: rubocop-performance rubocop-rails rubocop-rspec
+  brakeman:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        # with:
+          # ruby-version: 3.0.3
+      - name: brakeman
+        uses: reviewdog/action-brakeman@v2
+        with:
+          # brakeman_version: 4.8.2
+          reporter: github-pr-review # Default is github-pr-check
+
+  reek:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+      - uses: ruby/setup-ruby@v1
+        # with:
+          # ruby-version: 3.0.0
+      - name: reek
+        uses: reviewdog/action-reek@v1
+        with:
+          reek_version: gemfile
+          reporter: github-pr-review # Default is github-pr-check
+  standardrb:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: standardrb
+        uses: SennaLabs/action-standardrb@v0.0.3
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review # Default is github-pr-check
+          # rubocop_version: 0.1.6
+          rubocop_flags: --format progress
+
+  fasterer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+      - name: fasterer
+        uses: vk26/action-fasterer@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review # Default is github-pr-check
+
+  rspec:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: budget_app_api
+          POSTGRES_PASSWORD: 123qweasd
+          POSTGRES_DB: budget_app_api
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    # strategy:
+    #   matrix:
+    #      ruby-version: ['3.0.3', '3.1']
+    #      gemfiles:
+    #       - Gemfile
+    #       - gemfiles/Gemfiles.rails_6_1
+    #       - gemfiles/Gemfiles.rails_7
+    #       - gemfiles/Gemfiles.rails_master
+    # env:
+    #   BUNDLE_GEMFILE:  ${{ matrix.gemfiles }}
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          # ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+
+      - name: Setup Database
+        run: |
+          bundle exec rake db:create
+          bundle exec rake db:schema:load
+        env:
+          RAILS_ENV: test
+          POSTGRES_USER: budget_app_api
+          POSTGRES_PASSWORD: 123qweasd
+          POSTGRES_DB: budget_app_api
+
+      - name: Run RSpec
+        run: COVERAGE=true bundle exec rspec  --require rails_helper
+        env:
+          RAILS_ENV: test
+          POSTGRES_USER: budget_app_api
+          POSTGRES_PASSWORD: 123qweasd
+          POSTGRES_DB: budget_app_api
+
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@8f312efe1262fb463d906e9bf040319394c18d3e # v1.92
+        with:
+          bundler-cache: true
+      # Add or replace any other lints here
+      - name: Security audit dependencies
+        run: bin/bundler-audit --update
