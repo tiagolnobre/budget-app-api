@@ -148,8 +148,8 @@ workflows:
               gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
       - linter:
           e:
-            ruby_version: << parameters.ruby_version >>
-            gemfile: <<parameters.gemfile>>
+            ruby_version: 3.0.3
+            gemfile: Gemfile
           requires:
             - build
           matrix:
@@ -158,8 +158,8 @@ workflows:
               gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
       - test:
           e:
-            ruby_version: << parameters.ruby_version >>
-            gemfile: <<parameters.gemfile>>
+            ruby_version: 3.0.3
+            gemfile: Gemfile
           requires:
             - build
           matrix:
