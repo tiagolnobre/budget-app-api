@@ -129,9 +129,17 @@ workflows:
   pipeline:
     jobs:
       - build
+        matrix:
+            parameters:
+              ruby_version: ['3.0.3', '3.1']
+              gemfile: ["Gemfilee", "gemfiles/Gemfile.rails_6_1"]
       - linter:
           requires:
             - build
+          matrix:
+            parameters:
+              ruby_version: ['3.0.3', '3.1']
+              gemfile: ["Gemfilee", "gemfiles/Gemfile.rails_6_1"]
       - test:
           requires:
             - build
