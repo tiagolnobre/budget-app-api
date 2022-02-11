@@ -6,7 +6,7 @@ orbs:
 executors:
   ruby-postgres:
     docker:
-      - image: "circleci/ruby:3"
+      - image: "circleci/ruby:<< parameters.ruby_version >>"
         environment:
           GEMFILE_NAME: <<parameters.gemfile>>
 #         DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
@@ -141,20 +141,20 @@ workflows:
       - build
           matrix:
             parameters:
-              ruby_version: ['3.0.3', '3.1']
-              gemfile: ["Gemfilee", "gemfiles/Gemfile.rails_6_1"]
+              ruby_version: [3.0.3, 3.1]
+              gemfile: [Gemfile, gemfiles/Gemfile.rails_6_1]
       - linter:
           requires:
             - build
           matrix:
             parameters:
-              ruby_version: ['3.0.3', '3.1']
-              gemfile: ["Gemfilee", "gemfiles/Gemfile.rails_6_1"]
+              ruby_version: [3.0.3, 3.1]
+              gemfile: ["Gemfile", gemfiles/Gemfile.rails_6_1]
       - test:
           requires:
             - build
           matrix:
             parameters:
-              ruby_version: ['3.0.3', '3.1']
-              gemfile: ["Gemfilee", "gemfiles/Gemfile.rails_6_1"]
+              ruby_version: [3.0.3, 3.1]
+              gemfile: [Gemfile, gemfiles/Gemfile.rails_6_1]
 
