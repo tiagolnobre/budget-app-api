@@ -138,5 +138,9 @@ workflows:
           requires:
             - build
       - test:
+        matrix:
+          parameters:
+            ruby_version: ['3.0.3', '3.1']
+            gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
           requires:
             - build
