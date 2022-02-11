@@ -6,7 +6,7 @@ orbs:
 executors:
   ruby-postgres:
     docker:
-      - image: "circleci/ruby:<< parameters.ruby_version >>"
+      - image: "circleci/ruby:3
         environment:
           GEMFILE_NAME: <<parameters.gemfile>>
 #         DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
