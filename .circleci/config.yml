@@ -123,11 +123,11 @@ jobs:
       - run-security-vulnerabilities
   test:
     executor: ruby-postgres
-      parameters:
-        ruby_version:
-          type: string
-        gemfile:
-          type: string
+    parameters:
+      ruby_version:
+        type: string
+      gemfile:
+        type: string
     docker:
       - image: "circleci/ruby:<< parameters.ruby_version >>"
     environment:
