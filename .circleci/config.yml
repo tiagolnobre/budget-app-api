@@ -123,6 +123,15 @@ jobs:
       - run-security-vulnerabilities
   test:
     executor: ruby-postgres
+      parameters:
+        ruby_version:
+          type: string
+        gemfile:
+          type: string
+    docker:
+      - image: "circleci/ruby:<< parameters.ruby_version >>"
+    environment:
+      GEMFILE_NAME: <<parameters.gemfile>>
     steps:
       - checkout
       - resolve-dependencies
@@ -138,5 +147,9 @@ workflows:
           requires:
             - build
       - test:
+          matrix:
+            parameters:
+              ruby_version: ['3.0.3', '3.1']
+              gemfile: ["Gemfilee", "gemfiles/Gemfile.rails_6_1"]
           requires:
             - build
