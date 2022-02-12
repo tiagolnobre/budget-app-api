@@ -4,9 +4,23 @@ orbs:
   ruby: circleci/ruby@1.0
 
 executors:
-  ruby-postgres:
+  ruby-postgres-3.0.3:
     docker:
-      - image: "circleci/ruby:<< parameters.ruby_version >>"
+      - image: "circleci/ruby:3.0.3"
+        environment:
+          GEMFILE_NAME: <<parameters.gemfile>>
+#         DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
+          POSTGRES_USER: budget_app_api
+          POSTGRES_PASSWORD: 123qweasd
+          POSTGRES_DB: budget_app_api
+      - image: circleci/postgres:9.6.5-alpine-ram
+        environment:
+          POSTGRES_USER: budget_app_api
+          POSTGRES_PASSWORD: 123qweasd
+          POSTGRES_DB: budget_app_api
+  ruby-postgres-3.1:
+    docker:
+      - image: "circleci/ruby:3.1"
         environment:
           GEMFILE_NAME: <<parameters.gemfile>>
 #         DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
@@ -105,7 +119,7 @@ jobs:
         type: string
       gemfile:
         type: string
-    executor: ruby-postgres
+    executor: ruby-postgres-<< parameters.ruby_version >>"
     steps:
       - checkout
       - resolve-dependencies
@@ -115,7 +129,7 @@ jobs:
         type: string
       gemfile:
         type: string
-    executor: ruby-postgres
+    executor: ruby-postgres-<< parameters.ruby_version >>"
     steps:
       - checkout
       - resolve-dependencies
@@ -127,7 +141,7 @@ jobs:
         type: string
       gemfile:
         type: string
-    executor: ruby-postgres
+    executor: ruby-postgres-<< parameters.ruby_version >>"
     steps:
       - checkout
       - resolve-dependencies
