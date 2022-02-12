@@ -1,5 +1,84 @@
 version: 2.1
 
+commands:
+  resolve-dependencies:
+    parameters:
+      resources-cache-key:
+        description: "The cache key under which the dependencies will be looked up / made available for future builds"
+        type: string
+        default: "v1-{{ checksum \"Gemfile.lock\" }}"
+    steps:
+      - restore_cache:
+          keys:
+            - resources-<< parameters.resources-cache-key >>
+      - run:
+          name: "Resolve and install dependencies"
+          command: |
+            sudo gem install --force bundler
+            bundle config ignore_messages.httparty true
+            bundle config deployment true
+            bundle config path vendor/bundle
+            if [ -z ${GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN} ]; then
+              echo "Environment variable GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN is not set - will not setup bundler access to betterdoc-org private packages on GitHub."
+            else
+              echo "Environment variable GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN is set. Will setup bundler access to betterdoc-org private packages on GitHub."
+              bundle config https://rubygems.pkg.github.com/betterdoc-org ${GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN}
+            fi
+            bundle install --jobs=8
+      - save_cache:
+          paths:
+            - "./vendor/bundle"
+          key: resources-<< parameters.resources-cache-key >>
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - "./vendor/bundle"
+  run-linter:
+    steps:
+      - run:
+          name: "Run Rubocop verifications"
+          command: |
+            mkdir -p /tmp/linter-results/rubocop
+            bundle exec rubocop \
+              --require rubocop/formatter/junit_formatter \
+              --format RuboCop::Formatter::JUnitFormatter \
+              --out /tmp/linter-results/rubocop/results.xml
+      - store_test_results:
+          path: /tmp/linter-results
+  run-tests-rspec:
+    steps:
+      - run:
+          name: "Run unit tests using RSpec"
+          command: |
+            mkdir -p /tmp/tests-rspec-results
+            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
+            bundle exec rspec \
+              --format progress \
+              --format RspecJunitFormatter \
+              --out /tmp/tests-rspec-results/rspec.xml \
+              $TEST_FILES
+      - store_test_results:
+          path: /tmp/tests-rspec-results
+      - store_artifacts:
+          path: ./doc/coverage
+  run-security-vulnerabilities:
+    steps:
+      - run:
+          name: Brakeman security vulnerabilities
+          command: |
+            if [ $CIRCLE_NODE_INDEX -eq 0 ]
+              then
+              echo "Running brakeman..."
+              bundle exec brakeman --no-pager
+            fi
+  setup-postgres:
+    steps:
+      - run:
+          name: Setup PostgreSQL test database
+          command: |
+            bundle exec rake db:setup RAILS_ENV=test
+            bundle exec rake db:migrate RAILS_ENV=test
+            
 jobs:
   build:
     docker:
