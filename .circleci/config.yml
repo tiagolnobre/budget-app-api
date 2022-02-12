@@ -1,61 +1,30 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+# Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
+# See: https://circleci.com/docs/2.0/orb-intro/
+orbs:
+  ruby: circleci/ruby@1.4.0
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   build:
     docker:
-      - image: circleci/<< parameters.ruby_version >>
-      - image: circleci/postgres:9.6.2-alpine
-    parameters:
-      ruby_version:
-        type: string
-      gemfile:
-        type: string
-    environment:
-      BUNDLE_GEMFILE: << parameters.gemfile >>
+      - image: cimg/ruby:3.1.0
+    executor: ruby/default
     steps:
       - checkout
-      # Restore Cached Dependencies
-      # - restore_cache:
-      #     keys:
-      #       - gem-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "<< parameters.gemfile >>.lock" }}
-      #       - gem-cache-v1-{{ arch }}-{{ .Branch }}
-      #       - gem-cache-v1
-
-      - run: bundle install --path vendor/bundle
-
-      # - save_cache:
-      #     key: gem-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "<< parameters.gemfile >>.lock" }}
-      #     paths:
-      #       - vendor/bundle
-
       - run:
-          name: Install postgres client
-          command: sudo apt install -y postgresql-client
+          name: Which bundler?
+          command: bundle -v
+      - ruby/bundle-install
 
-      - run:
-          name: Configure config database.yml
-          command: bundle exec rake db:copy_credentials
-
-      - run:
-          name: wait for postgresql
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
-
-      - run:
-          name: Database Setup
-          command: |
-            bundle exec rake db:test:prepare
-      - run:
-          name: Run tests
-          command: bundle exec rspec --format progress --format RspecJunitFormatter -o ~/test-results/rspec/rspec.xml
-
-      - store_test_results:
-          path: ~/test-results/rspec/
-
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  tests:
+  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
+    # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - build:
-          matrix:
-            parameters:
-              ruby_version: ["ruby:3.0.3-buster"]
-              gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
+      - build
