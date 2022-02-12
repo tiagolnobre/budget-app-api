@@ -115,6 +115,8 @@ commands:
 jobs:
   build:
     parameters:
+      ex:
+        type: string
       ruby_version:
         type: string
       gemfile:
@@ -125,6 +127,8 @@ jobs:
       - resolve-dependencies
   linter:
     parameters:
+      ex:
+        type: string
       ruby_version:
         type: string
       gemfile:
@@ -137,6 +141,8 @@ jobs:
       - run-security-vulnerabilities
   test:
     parameters:
+      ex:
+        type: string
       ruby_version:
         type: string
       gemfile:
