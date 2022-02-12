@@ -8,7 +8,7 @@ executors:
     docker:
       - image: "circleci/ruby:3.0.3"
         environment:
-          GEMFILE_NAME: <<parameters.gemfile>>
+          #GEMFILE_NAME: <<parameters.gemfile>>
 #         DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
           POSTGRES_USER: budget_app_api
           POSTGRES_PASSWORD: 123qweasd
@@ -22,7 +22,7 @@ executors:
     docker:
       - image: "circleci/ruby:3.1"
         environment:
-          GEMFILE_NAME: <<parameters.gemfile>>
+          #GEMFILE_NAME: <<parameters.gemfile>>
 #         DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
           POSTGRES_USER: budget_app_api
           POSTGRES_PASSWORD: 123qweasd
