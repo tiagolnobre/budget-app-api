@@ -4,7 +4,7 @@ orbs:
   ruby: circleci/ruby@1.0
 
 executors:
-  "ruby-postgres-3-0-3":
+  ruby-postgres-303:
     docker:
       - image: "circleci/ruby:3.0.3"
         environment:
@@ -18,7 +18,7 @@ executors:
           POSTGRES_USER: budget_app_api
           POSTGRES_PASSWORD: 123qweasd
           POSTGRES_DB: budget_app_api
-  ruby-postgres-3-1:
+  ruby-postgres-31:
     docker:
       - image: "circleci/ruby:3.1"
         environment:
@@ -119,7 +119,7 @@ jobs:
         type: string
       gemfile:
         type: string
-    executor: ruby-postgres-<< parameters.ruby_version >>
+    executor: ruby-postgres-<< parameters.ex >>
     steps:
       - checkout
       - resolve-dependencies
@@ -129,7 +129,7 @@ jobs:
         type: string
       gemfile:
         type: string
-    executor: ruby-postgres-<< parameters.ruby_version >>
+    executor: ruby-postgres-<< parameters.ex >>
     steps:
       - checkout
       - resolve-dependencies
@@ -141,7 +141,7 @@ jobs:
         type: string
       gemfile:
         type: string
-    executor: ruby-postgres-<< parameters.ruby_version >>
+    executor: ruby-postgres-<< parameters.ex >>
     steps:
       - checkout
       - resolve-dependencies
@@ -155,6 +155,7 @@ workflows:
       - build:
           matrix:
             parameters:
+              ex: [303, 31]
               ruby_version: ['3.0.3', '3.1']
               gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
       - linter:
@@ -162,6 +163,7 @@ workflows:
             - build
           matrix:
             parameters:
+              ex: [303, 31]
               ruby_version: ['3.0.3', '3.1']
               gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
       - test:
@@ -169,6 +171,7 @@ workflows:
             - build
           matrix:
             parameters:
+              ex: [303, 31]
               ruby_version: ['3.0.3', '3.1']
               gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
 
