@@ -1,183 +1,57 @@
 version: 2.1
 
-orbs:
-  ruby: circleci/ruby@1.0
-
-executors:
-  ruby-postgres-303:
-    docker:
-      - image: "cimg/ruby:3.0.3"
-        environment:
-          #GEMFILE_NAME: <<parameters.gemfile>>
-#         DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
-          POSTGRES_USER: budget_app_api
-          POSTGRES_PASSWORD: 123qweasd
-          POSTGRES_DB: budget_app_api
-      - image: circleci/postgres:9.6.5-alpine-ram
-        environment:
-          POSTGRES_USER: budget_app_api
-          POSTGRES_PASSWORD: 123qweasd
-          POSTGRES_DB: budget_app_api
-  ruby-postgres-31:
-    docker:
-      - image: "cimg/ruby:3.1.0"
-        environment:
-          #GEMFILE_NAME: <<parameters.gemfile>>
-#         DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
-          POSTGRES_USER: budget_app_api
-          POSTGRES_PASSWORD: 123qweasd
-          POSTGRES_DB: budget_app_api
-      - image: circleci/postgres:9.6.5-alpine-ram
-        environment:
-          POSTGRES_USER: budget_app_api
-          POSTGRES_PASSWORD: 123qweasd
-          POSTGRES_DB: budget_app_api
-
-commands:
-  resolve-dependencies:
-    parameters:
-      resources-cache-key:
-        description: "The cache key under which the dependencies will be looked up / made available for future builds"
-        type: string
-        default: "v1-{{ checksum \"Gemfile.lock\" }}"
-    steps:
-      - restore_cache:
-          keys:
-            - resources-<< parameters.resources-cache-key >>
-      - run:
-          name: "Resolve and install dependencies"
-          command: |
-            sudo gem install --force bundler
-            bundle config ignore_messages.httparty true
-            bundle config deployment true
-            bundle config path vendor/bundle
-            if [ -z ${GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN} ]; then
-              echo "Environment variable GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN is not set - will not setup bundler access to betterdoc-org private packages on GitHub."
-            else
-              echo "Environment variable GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN is set. Will setup bundler access to betterdoc-org private packages on GitHub."
-              bundle config https://rubygems.pkg.github.com/betterdoc-org ${GITHUB_PACKAGE_ACCESS_USER_AND_TOKEN}
-            fi
-            bundle install --jobs=8
-      - save_cache:
-          paths:
-            - "./vendor/bundle"
-          key: resources-<< parameters.resources-cache-key >>
-      - persist_to_workspace:
-          root: "."
-          paths:
-            - "./vendor/bundle"
-  run-linter:
-    steps:
-      - run:
-          name: "Run Rubocop verifications"
-          command: |
-            mkdir -p /tmp/linter-results/rubocop
-            bundle exec rubocop \
-              --require rubocop/formatter/junit_formatter \
-              --format RuboCop::Formatter::JUnitFormatter \
-              --out /tmp/linter-results/rubocop/results.xml
-      - store_test_results:
-          path: /tmp/linter-results
-  run-tests-rspec:
-    steps:
-      - run:
-          name: "Run unit tests using RSpec"
-          command: |
-            mkdir -p /tmp/tests-rspec-results
-            TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
-            bundle exec rspec \
-              --format progress \
-              --format RspecJunitFormatter \
-              --out /tmp/tests-rspec-results/rspec.xml \
-              $TEST_FILES
-      - store_test_results:
-          path: /tmp/tests-rspec-results
-      - store_artifacts:
-          path: ./doc/coverage
-  run-security-vulnerabilities:
-    steps:
-      - run:
-          name: Brakeman security vulnerabilities
-          command: |
-            if [ $CIRCLE_NODE_INDEX -eq 0 ]
-              then
-              echo "Running brakeman..."
-              bundle exec brakeman --no-pager
-            fi
-
-  setup-postgres:
-    steps:
-      - run:
-          name: Setup PostgreSQL test database
-          command: |
-            bundle exec rake db:setup RAILS_ENV=test
-            bundle exec rake db:migrate RAILS_ENV=test
 jobs:
   build:
+    docker:
+      - image: circleci/<< parameters.ruby_version >>
+        environment:
+          GEMFILE_NAME: <<parameters.gemfile>>
+#         DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
+          POSTGRES_USER: budget_app_api
+          POSTGRES_PASSWORD: 123qweasd
+          POSTGRES_DB: budget_app_api
+      - image: circleci/postgres:9.6.5-alpine-ram
+        environment:
+          POSTGRES_USER: budget_app_api
+          POSTGRES_PASSWORD: 123qweasd
+          POSTGRES_DB: budget_app_api
+
     parameters:
-      ex:
-        type: string
       ruby_version:
         type: string
       gemfile:
         type: string
-    executor: ruby-postgres-<< parameters.ex >>
+    environment:
+      BUNDLE_GEMFILE: << parameters.gemfile >>
     steps:
       - checkout
-      - resolve-dependencies
-  linter:
-    parameters:
-      ex:
-        type: string
-      ruby_version:
-        type: string
-      gemfile:
-        type: string
-    executor: ruby-postgres-<< parameters.ex >>
-    steps:
-      - checkout
-      - resolve-dependencies
-      - run-linter
-      - run-security-vulnerabilities
-  test:
-    parameters:
-      ex:
-        type: string
-      ruby_version:
-        type: string
-      gemfile:
-        type: string
-    executor: ruby-postgres-<< parameters.ex >>
-    steps:
-      - checkout
+      # Restore Cached Dependencies
+      # - restore_cache:
+      #     keys:
+      #       - gem-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "<< parameters.gemfile >>.lock" }}
+      #       - gem-cache-v1-{{ arch }}-{{ .Branch }}
+      #       - gem-cache-v1
+
+      - run: bundle install --path vendor/bundle
+
+      # - save_cache:
+      #     key: gem-cache-v1-{{ arch }}-{{ .Branch }}-{{ checksum "<< parameters.gemfile >>.lock" }}
+      #     paths:
+      #       - vendor/bundle
+
+      - run:
+          name: wait for postgresql
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
       - resolve-dependencies
       - setup-postgres
       - run-tests-rspec
 
 workflows:
-  version: 2
-  pipeline:
+  tests:
     jobs:
       - build:
           matrix:
             parameters:
-              ex: ["303", "31"]
-              ruby_version: ['3.0.3', '3.1']
+              ruby_version: ["ruby:3.0-buster", "ruby:3.0.1-buster"]
               gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
-      - linter:
-          requires:
-            - build
-          matrix:
-            parameters:
-              ex: ["303", "31"]
-              ruby_version: ['3.0.3', '3.1']
-              gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
-      - test:
-          requires:
-            - build
-          matrix:
-            parameters:
-              ex: ["303", "31"]
-              ruby_version: ['3.0.3', '3.1']
-              gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
-
