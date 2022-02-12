@@ -82,7 +82,7 @@ commands:
 jobs:
   build:
     docker:
-      - image: cimg/<< parameters.ruby_version >>
+      - image: circleci/<< parameters.ruby_version >>
         environment:
           GEMFILE_NAME: <<parameters.gemfile>>
 #         DATABASE_URL: postgresql://root@localhost:5432/budget-app-api
@@ -132,5 +132,5 @@ workflows:
       - build:
           matrix:
             parameters:
-              ruby_version: ["ruby:3.0.3", "ruby:3.1.0"]
+              ruby_version: ["ruby:3.0.3-buster", "ruby:3.0.3-buster"]
               gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
