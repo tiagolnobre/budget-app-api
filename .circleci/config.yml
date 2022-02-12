@@ -132,5 +132,5 @@ workflows:
       - build:
           matrix:
             parameters:
-              ruby_version: ["ruby:3.0.3"]
+              ruby_version: ["ruby:3.0.3", "ruby:3.0.3"]
               gemfile: ["Gemfile", "gemfiles/Gemfile.rails_6_1"]
