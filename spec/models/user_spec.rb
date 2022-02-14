@@ -38,4 +38,13 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe 'creates new_user notification' do
+    it 'message is generated correctly' do
+      user = create(:user)
+
+      expect(user.notifications.last.to_notification.message)
+        .to eq(I18n.t('notifications.new_message_notification.messages.new_record'))
+    end
+  end
 end
