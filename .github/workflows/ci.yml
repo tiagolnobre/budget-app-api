@@ -9,21 +9,23 @@ on:
       - master
 
 jobs:
-#  rubocop:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Check out code
-#        uses: actions/checkout@v2
-#      - uses: ruby/setup-ruby@v1
-#        with:
-#          # ruby-version: ${{ matrix.ruby-version }}
-#          bundler-cache: true
-#      - uses: reviewdog/action-rubocop@v1
-#        with:
-#          filter_mode: nofilter
-#          reporter: github-check
-#          github_token: ${{ secrets.github_token }}
-#          rubocop_extensions: rubocop-performance rubocop-rails rubocop-rspec
+  rubocop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          # ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true
+      - uses: reviewdog/action-rubocop@v1
+        with:
+          filter_mode: nofilter
+          reporter: github-pr-review
+          rubocop_version: gemfile
+          github_token: ${{ secrets.github_token }}
+          rubocop_flags: --config .rubocop.yml
+#          rubocop_extensions: rubocop-performance rubocop-rails rubocop-rspec 
   brakeman:
     runs-on: ubuntu-latest
     steps:
