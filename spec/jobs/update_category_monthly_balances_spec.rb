@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 describe UpdateCategoryMonthlyBalances, type: :job do
   let(:transaction) { create(:transaction) }
   let(:account) { create(:account, user: transaction.user) }
   let(:date) { transaction.date }
 
-  describe '#perform' do
-    it 'correct updates category monthly balances' do
+  describe "#perform" do
+    it "correct updates category monthly balances" do
       expect do
         described_class.perform_now(account: account, month: date.month, year: date.year)
       end.to change(CategoryMonthlyStat, :count).by(1)

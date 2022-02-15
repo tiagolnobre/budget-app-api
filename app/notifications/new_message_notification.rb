@@ -9,7 +9,7 @@ class NewMessageNotification < Noticed::Base
   param :type, :message_key
 
   def to_database
-    { recipient: recipient, type: self.class.name, params: params }
+    {recipient: recipient, type: self.class.name, params: params}
   end
 
   # I18n helpers

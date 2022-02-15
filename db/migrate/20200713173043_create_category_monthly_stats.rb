@@ -15,6 +15,6 @@ class CreateCategoryMonthlyStats < ActiveRecord::Migration[6.0]
 
     add_index :category_monthly_stats, :month
     add_index :category_monthly_stats, :year
-    add_index :category_monthly_stats, %i[account_id category month year], name: 'index_cms_on_acount_month_year_cat', unique: true
+    add_index :category_monthly_stats, %i[account_id category month year], name: "index_cms_on_acount_month_year_cat", unique: true
   end
 end

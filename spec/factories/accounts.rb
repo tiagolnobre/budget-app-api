@@ -5,6 +5,6 @@ FactoryBot.define do
     association :user, factory: :user
     negative_balance { 0.0 }
     positive_balance { 0.0 }
-    description { '' }
+    description { "" }
   end
 end
