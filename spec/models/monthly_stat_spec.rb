@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe MonthlyStat, type: :model do
-  describe "relations" do
+  describe 'relations' do
     it { is_expected.to belong_to(:account).optional(false) }
   end
 
-  describe "validations" do
+  describe 'validations' do
     # it { is_expected.to validate_uniqueness_of(:account).scoped_to(:month, :year) }
     it { is_expected.to validate_numericality_of(:year) }
     it { is_expected.to validate_inclusion_of(:month).in_range(1..12) }

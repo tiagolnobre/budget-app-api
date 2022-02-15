@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "simplecov"
+require 'simplecov'
 
-SimpleCov.start "rails" do
-  coverage_dir File.join("doc", "coverage")
+SimpleCov.start 'rails' do
+  coverage_dir File.join('doc', 'coverage')
 
   groups = %w[channels commands controllers decorators features forms
-    helpers jobs libs mailers models policies queries
-    serializers services tasks uploaders values]
+              helpers jobs libs mailers models policies queries
+              serializers services tasks uploaders values]
 
   groups.each { |name| add_group name.capitalize, "/app/#{name}" }
 end
