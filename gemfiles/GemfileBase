@@ -31,7 +31,7 @@ gem 'rollbar'
 
 gem 'sidekiq', '~> 6.4.1'
 
-gem "noticed", "~> 1.5"
+gem 'noticed', '~> 1.5'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
@@ -85,6 +85,7 @@ group :test do
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers'
   gem 'codecov', require: false
+  gem 'codecov_opentelem'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
