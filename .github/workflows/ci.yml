@@ -125,7 +125,9 @@ jobs:
           POSTGRES_USER: budget_app_api
           POSTGRES_PASSWORD: 123qweasd
           POSTGRES_DB: budget_app_api
-
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
 
   audit:
     runs-on: ubuntu-latest
