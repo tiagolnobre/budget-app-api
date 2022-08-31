@@ -77,7 +77,7 @@ GEM
       msgpack (~> 1.2)
     brakeman (5.2.1)
     builder (3.2.4)
-    bullet (7.0.1)
+    bullet (7.0.3)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bundle-audit (0.1.0)
@@ -310,7 +310,7 @@ GEM
       unf_ext
     unf_ext (0.0.8.2)
     unicode-display_width (2.1.0)
-    uniform_notifier (1.14.2)
+    uniform_notifier (1.16.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
